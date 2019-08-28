@@ -8,8 +8,8 @@
     <select [(ngModel)]="newRole" name="newRole">
       <option disabled selected>Select Role</option>
       <option value="user">User</option>
-      <option value="assis">Group Assis</option>
-      <option value="admin" *ngIf="user.role == 'super'">Group Admin</option>
+      <option value="assis">Group Assistant</option>
+      <option value="admin" *ngIf="user.role == 'super'">Group Administrator</option>
     </select>
     <input type="submit" value="Go" (click)="createUser()"/>
     <div *ngIf="newRole == 'Group Assis'">
@@ -23,17 +23,58 @@
 <div *ngIf="user.role == 'super'">
   <h3>Delete User</h3>
   <form>
-    <select [(ngModel)]="userDelete" name="userDelete">
+    <select [(ngModel)]="killUser" name="killUser">
         <option value="null">Select User</option>
-        <option *ngFor="let user of allUsers">
-          {{user.username}}
+        <option *ngFor="let u of users">
+          {{u.username}}
         </option>
     </select>
+    <input type="button" value="Delete User" (click)="destroyUser()">
   </form>
 </div>
 
-<div *ngFor="let user of allUsers">
-  <ul>
-    <li>{{user.username}}</li>
-  </ul>
+<div *ngIf="user.role == 'super' || user.role == 'admin'">
+  <h3>Promote User</h3>
+  <form>
+    <select [(ngModel)]="boostUser" name="boostUser">
+        <option value="null">Select User</option>
+        <ng-container *ngFor="let u of users">
+          <option *ngIf="user.role == 'super' && u.role != 'super'">
+            {{u.username}}
+          </option>
+        </ng-container>
+        <ng-container *ngFor="let u of users">
+          <option *ngIf="u.role == 'admin' && u.role != 'super' && u.role != 'admin'">
+            {{u.username}}
+          </option>
+        </ng-container> 
+    </select>
+    <ng-container *ngIf="boostUser">
+      <h4>Promote {{boostUser}} to which role?</h4>
+      <select [(ngModel)]="boostRole" name="boostRole">
+          <option value="null">Select Role</option>
+          <ng-container *ngIf="user.role == 'super'">
+              <ng-container *ngFor="let u of users">
+                  <option value="super" *ngIf="u.username == boostUser && u.role != super">
+                    Super
+                  </option>
+                  <option value="admin" *ngIf="u.username == boostUser && u.role == 'user' || u.role == 'assis'">
+                    Group Administrator
+                  </option>
+                  <option value="assis" *ngIf="u.username == boostUser && u.role == 'user'">
+                    Group Assistant
+                  </option>
+              </ng-container>
+          </ng-container>
+          <ng-container *ngIf="user.role == 'admin'">
+              <ng-container *ngFor="let u of users">
+                  <option value="assis" *ngIf="u.username == boostUser && u.role == 'user'">
+                    Group Assistant
+                  </option>
+              </ng-container>
+          </ng-container>
+      </select>
+    </ng-container>
+    <input type="button" value="Promote User" (click)="promoteUser()">
+  </form>
 </div>

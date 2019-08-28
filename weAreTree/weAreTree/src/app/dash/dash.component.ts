@@ -15,15 +15,21 @@ export class DashComponent implements OnInit {
 // User Info
   username;
   user = [];
-  users = [];
 
 // Data
-  allUsers = [];
+  users = [];
 
 // Create User Variables
   newUser = "";
   newEmail = "";
   newRole = "";
+
+// Delete User Variable
+  killUser = "";
+
+// Promote User Variable
+  boostUser = "";
+  boostRole = "";
 
 // Arbitrary Variables
   error = "";
@@ -45,15 +51,37 @@ export class DashComponent implements OnInit {
       console.log(data);
       if(data != "User exists breh"){
         console.log(data);
-        this.allUsers = data;
+        this.users = data;
+        this.trimUser();
       }else{
         console.log(data);
         this.error = data;
       }
     });
-
-
   }
+
+  destroyUser(){
+    let userObj = {"username": this.killUser};
+
+    this.http.post<any>(BACKEND_URL + "/destroyUser", userObj).subscribe((data) => {
+      console.log(data)
+      this.users = data;
+      this.trimUser();
+    });
+  }
+
+  promoteUser(){
+    let userObj = {
+      "username" : this. boostUser,
+      "role" : this.boostRole
+    }
+
+      this.http.post<any>(BACKEND_URL + "/promoteUser", userObj).subscribe((data) => {
+        console.log(data);
+        this.users = data;
+        this.trimUser();
+      });
+    }
 
   fetchUser(){
     let userObj = {"username" : this.username};
@@ -67,7 +95,7 @@ export class DashComponent implements OnInit {
     let userObj = {"username" : this.username};
     this.http.post<any>(BACKEND_URL + "/fetchUsers", userObj).subscribe((data) => {
       console.log(data);
-      this.allUsers = data;
+      this.users = data;
     });
   }
 
@@ -75,6 +103,15 @@ export class DashComponent implements OnInit {
     this.username = localStorage.getItem("username");
     this.fetchUser();
     this.fetchUsers();
+  }
+
+  trimUser(){
+    for(let i = 0; i < this.users.length; i++){
+      if(this.username == this.users[i].username){
+        this.users.splice(i, 1);
+        console.log(this.users);
+      }
+    }
   }
 
 }

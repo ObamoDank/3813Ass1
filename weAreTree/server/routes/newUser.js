@@ -32,7 +32,6 @@ module.exports = function(app, path){
             if(!userExists){
                 allData.users.push(newUser);
                 users = allData.users;
-                console.log(allData);
                 allDataJson = JSON.stringify(allData);
                 fs.writeFile("./data.json", allDataJson, "utf-8", function(err){
                     if(err){
