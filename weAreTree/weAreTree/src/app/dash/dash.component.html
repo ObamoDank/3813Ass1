@@ -1,0 +1,39 @@
+<h1>Greetings {{user.username}}</h1>
+
+<div *ngIf="user.role == 'super' || user.role == 'admin'">
+  <h3>Create User</h3>
+  <Form>
+    <input type="text" [(ngModel)]="newUser" name="newUser" id="newUser" placeholder="Username"/><br>
+    <input type="text" [(ngModel)]="newEmail" name="newEmail" id="newEmail" placeholder="Email"/><br>
+    <select [(ngModel)]="newRole" name="newRole">
+      <option disabled selected>Select Role</option>
+      <option value="user">User</option>
+      <option value="assis">Group Assis</option>
+      <option value="admin" *ngIf="user.role == 'super'">Group Admin</option>
+    </select>
+    <input type="submit" value="Go" (click)="createUser()"/>
+    <div *ngIf="newRole == 'Group Assis'">
+    <select>
+      <option disabled selected>Which Group?</option>
+    </select>
+    </div>
+  </Form>
+</div>
+
+<div *ngIf="user.role == 'super'">
+  <h3>Delete User</h3>
+  <form>
+    <select [(ngModel)]="userDelete" name="userDelete">
+        <option value="null">Select User</option>
+        <option *ngFor="let user of allUsers">
+          {{user.username}}
+        </option>
+    </select>
+  </form>
+</div>
+
+<div *ngFor="let user of allUsers">
+  <ul>
+    <li>{{user.username}}</li>
+  </ul>
+</div>
