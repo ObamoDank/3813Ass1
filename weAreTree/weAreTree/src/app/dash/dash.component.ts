@@ -12,36 +12,36 @@ const BACKEND_URL = "http://localhost:3000";
   styleUrls: ['./dash.component.css']
 })
 export class DashComponent implements OnInit {
-// User Info
+  // User Info
   username;
   user = [];
 
-// Data
+  // Data
   users = [];
 
-// Create User Variables
+  // Create User Variables
   newUser = "";
   newEmail = "";
   newRole = "";
 
-// Delete User Variable
+  // Delete User Variable
   killUser = "";
 
-// Promote User Variable
+  // Promote User Variable
   boostUser = "";
   boostRole = "";
 
-// Arbitrary Variables
+  // Arbitrary Variables
   error = "";
 
 
   constructor(private http: HttpClient) { }
 
-  createUser(){
+  createUser() {
     let userObj = {
-      "newUser" : "",
-      "newEmail" : "",
-      "newRole" : "",
+      "newUser": "",
+      "newEmail": "",
+      "newRole": "",
     }
 
     userObj.newUser = this.newUser;
@@ -49,19 +49,19 @@ export class DashComponent implements OnInit {
     userObj.newRole = this.newRole;
     this.http.post<any>(BACKEND_URL + "/newUser", userObj).subscribe((data) => {
       console.log(data);
-      if(data != "User exists breh"){
+      if (data != "User exists breh") {
         console.log(data);
         this.users = data;
         this.trimUser();
-      }else{
+      } else {
         console.log(data);
         this.error = data;
       }
     });
   }
 
-  destroyUser(){
-    let userObj = {"username": this.killUser};
+  destroyUser() {
+    let userObj = { "username": this.killUser };
 
     this.http.post<any>(BACKEND_URL + "/destroyUser", userObj).subscribe((data) => {
       console.log(data)
@@ -70,29 +70,34 @@ export class DashComponent implements OnInit {
     });
   }
 
-  promoteUser(){
-    let userObj = {
-      "username" : this. boostUser,
-      "role" : this.boostRole
-    }
+  promoteUser() {
+    if (this.boostUser && this.boostRole) {
+      let userObj = {
+        "username": this.boostUser,
+        "role": this.boostRole
+      }
 
       this.http.post<any>(BACKEND_URL + "/promoteUser", userObj).subscribe((data) => {
         console.log(data);
         this.users = data;
         this.trimUser();
+        this.error="";
       });
+    }else{
+      this.error = "...Just pick an option"
     }
+  }
 
-  fetchUser(){
-    let userObj = {"username" : this.username};
+  fetchUser() {
+    let userObj = { "username": this.username };
     this.http.post<any>(BACKEND_URL + "/fetchUser", userObj).subscribe((data) => {
       console.log(data);
       this.user = data;
     });
   }
 
-  fetchUsers(){
-    let userObj = {"username" : this.username};
+  fetchUsers() {
+    let userObj = { "username": this.username };
     this.http.post<any>(BACKEND_URL + "/fetchUsers", userObj).subscribe((data) => {
       console.log(data);
       this.users = data;
@@ -103,11 +108,12 @@ export class DashComponent implements OnInit {
     this.username = localStorage.getItem("username");
     this.fetchUser();
     this.fetchUsers();
+    this.error=""
   }
 
-  trimUser(){
-    for(let i = 0; i < this.users.length; i++){
-      if(this.username == this.users[i].username){
+  trimUser() {
+    for (let i = 0; i < this.users.length; i++) {
+      if (this.username == this.users[i].username) {
         this.users.splice(i, 1);
         console.log(this.users);
       }

@@ -11,8 +11,8 @@ module.exports = function(app, path){
         }
 
         let userExists = false;
-        let allData = [];
         let users = [];
+
         console.log("Made it to new User");
 
         if(!req.body){
@@ -23,7 +23,7 @@ module.exports = function(app, path){
             if(err) {
                 throw err;
             }
-            allData = JSON.parse(data);
+            let allData = JSON.parse(data);
             for(let i = 0; i < allData.users.length; i++){
                 if(allData.users[i].username == newUser.username){
                     userExists = true;

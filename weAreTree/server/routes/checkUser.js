@@ -5,6 +5,7 @@ module.exports = function(app, path){
         let username = req.body.username;
         let users = [];
         let userValid = false;
+
         console.log("Made it to checkUser");
 
         if(!req.body){

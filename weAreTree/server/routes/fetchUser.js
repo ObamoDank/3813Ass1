@@ -4,7 +4,7 @@ module.exports = function(app, path){
     app.post("/fetchUser", function(req, res){
         let username = req.body.username;
         let user = {};
-        
+
         console.log("Made it to fetchUser singular");
 
         if(!req.body){

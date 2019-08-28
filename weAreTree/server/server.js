@@ -13,5 +13,6 @@ require("./listen.js")(app, path);
 require("./routes/checkUser.js")(app, path);
 require("./routes/newUser.js")(app, path);
 require("./routes/destroyUser.js")(app, path);
+require("./routes/promoteUser.js")(app, path);
 require("./routes/fetchUser.js")(app, path);
 require("./routes/fetchUsers.js")(app, path);

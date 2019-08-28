@@ -6,14 +6,18 @@ module.exports = function(app, path){
     app.post("/fetchUsers", function(req, res){
         let username = req.body.username;
         let users = {};
+
         console.log("Made it to fetchUsers plural");
-        console.log(username);
+
+        if(!req.body){
+            return res.sendstatus(400);
+        }
 
         fs.readFile("./data.json", "utf8", function(err, data){
             if(err){
                 throw err;
             }
-            allData = JSON.parse(data);
+            let allData = JSON.parse(data);
             users = allData.users;
                 // Removes active user from user array
             for(let i = 0; i < users.length; i++){
