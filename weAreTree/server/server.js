@@ -15,6 +15,8 @@ require("./routes/newUser.js")(app, path);
 require("./routes/destroyUser.js")(app, path);
 require("./routes/promoteUser.js")(app, path);
 require("./routes/fetchUser.js")(app, path);
+require("./routes/fetchRole.js")(app, path);
 require("./routes/fetchUsers.js")(app, path);
 require("./routes/newGroup.js")(app, path);
+require("./routes/destroyGroup.js")(app, path);
 require("./routes/fetchGroups.js")(app, path);

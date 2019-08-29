@@ -37,13 +37,16 @@ export class DashComponent implements OnInit {
   newGroup = "";
   newAdmin = "";
 
+  // Destroy Group Variables
+  killGroup = "";
+
   // Error variables for display
   error = "";
   createError = "";
   killError = "";
   promoteError = "";
   gCreateError = "";
-
+  gKillError = "";
 
   constructor(private http: HttpClient) { }
 
@@ -118,10 +121,12 @@ export class DashComponent implements OnInit {
         "groupAdmin": this.newAdmin,
         "user": this.username
       }
+
       this.http.post<any>(BACKEND_URL + "/newGroup", groupObj).subscribe((data) => {
         console.log(data);
         if (data != "Oy group Exists ay Brah") {
           this.groups = data;
+          this.trimGroups();
           this.newGroup = "";
           this.newAdmin = "";
           this.gCreateError = "";
@@ -134,44 +139,63 @@ export class DashComponent implements OnInit {
     }
   }
 
+  destroyGroup() {
+    if (this.killGroup) {
+      let groupObj = { "name": this.killGroup };
+
+      this.http.post<any>(BACKEND_URL + "/destroyGroup", groupObj).subscribe((data) => {
+        console.log(data);
+        this.groups = data;
+        this.trimGroups();
+        this.killGroup = "";
+        this.gKillError = "";
+      });
+    } else {
+      this.gKillError = "...Just pick a room mate";
+    }
+  }
+
   fetchUser() {
     let userObj = { "username": this.username };
     this.http.post<any>(BACKEND_URL + "/fetchUser", userObj).subscribe((data) => {
-      console.log(data);
+      console.log(data)
       this.user = data;
     });
   }
 
-
+  fetchRole() {
+    let userObj = { "username": this.username };
+    this.http.post<any>(BACKEND_URL + "/fetchRole", userObj).subscribe((data) => {
+      this.userRole = data.role;
+      console.log(this.userRole);
+    });
+  }
 
   fetchUsers() {
     let userObj = { "username": this.username };
     this.http.post<any>(BACKEND_URL + "/fetchUsers", userObj).subscribe((data) => {
-      console.log(data);
       this.users = data;
+      this.trimUsers();
     });
   }
 
   fetchGroups() {
-    let groupObj = { "message" : "G'day maite could I get some groups over 'ere" };
+    let groupObj = { "message": "G'day maite could I get some groups over 'ere" };
     this.http.post<any>(BACKEND_URL + "/fetchGroups", groupObj).subscribe((data) => {
-      console.log(data);
       this.groups = data;
+      this.trimGroups();
+      console.log(this.groups)
     });
   }
 
   ngOnInit() {
     this.username = localStorage.getItem("username");
     this.fetchUser();
+    this.fetchRole();
     this.fetchUsers();
-    this.trimUsers();
     this.fetchGroups();
-    // this.trimGroups();
-    console.log(this.groups);
     this.error = ""
   }
-
-
 
   trimUsers() {
     for (let i = 0; i < this.users.length; i++) {
@@ -182,19 +206,25 @@ export class DashComponent implements OnInit {
     }
   }
 
-  // trimGroups() {
-  //   if (this.user.role != 'super') {
-  //     for (let i = 0; i < this.groups.length; i++) {
-  //       if (this.groups[i].admin != this.username || !this.groups[i].assis.includes(this.username) || !this.groups[i].users.includes(this.username)) {
-  //         this.groups.splice(i, 1);
-  //       }
-  //       for (let j = 0; j < this.groups[i].channels.length; i++) {
-  //         if (!this.groups[i].channels[j].access.includes(this.username)) {
-  //           this.groups[i].channels.splice(j, 1);
-  //         }
-  //       }
-  //     }
-  //   }
-  //   console.log(this.groups);
-  // }
+  trimGroups() {
+    if (this.userRole != 'super') {
+      console.log(this.userRole);
+      for (let i = this.groups.length - 1; i >= 0; i--) {
+        if (this.groups[i].admin != this.username && !this.groups[i].assis.includes(this.username) && !this.groups[i].users.includes(this.username)) {
+          this.groups.splice(i, 1);
+        } else {
+          if (this.groups[i].admin != this.username && !this.groups[i].assis.includes(this.username)) {
+            if (this.groups[i].channels != []) {
+              for (let j = this.groups[i].channels.length - 1; j >= 0; j--) {
+                if (!this.groups[i].channels[j].access.includes(this.username)) {
+                  this.groups[i].channels.splice(j, 1);
+                }
+              }
+            }
+          }
+        }
+      }
+      console.log(this.groups);
+    }
+  }
 }

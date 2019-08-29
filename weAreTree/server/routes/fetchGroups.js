@@ -9,7 +9,7 @@ module.exports = function(app, path){
         groups = []
 
         console.log("Made it to Fetch Groups.. Put your feet up..")
-        console.log("msg");
+        console.log(msg);
         fs.readFile("./data.json", "utf-8", function(err, data){
             if(err){
                 throw err;

@@ -116,3 +116,28 @@
         {{error}}
       </div>
 </div>
+
+<div *ngIf="user.role == 'super' || user.role == 'admin'">
+    <h3>Delete Group</h3>
+    <form>
+      <select [(ngModel)]="killGroup" name="killGroup" required>
+          <option value=""  selected>Select Group</option>
+          <ng-container *ngIf="user.role == 'super'">
+            <option *ngFor="let group of groups">
+              {{group.name}}
+            </option>
+          </ng-container>
+          <ng-container *ngIf="user.role == 'admin'">
+            <ng-container *ngFor="let group of groups">
+              <option *ngIf="group.admin == 'username'">
+                {{group.name}}
+              </option>
+            </ng-container>
+          </ng-container>
+      </select>
+      <input type="button" value="Delete Group" (click)="destroyGroup()">
+    </form>
+    <div *ngIf="gKillError">
+      <h4>{{gKillError}}</h4>
+    </div>
+  </div>

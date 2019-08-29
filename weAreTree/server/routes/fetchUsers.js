@@ -18,12 +18,12 @@ module.exports = function(app, path){
             }
             let allData = JSON.parse(data);
             users = allData.users;
-                // Removes active user from user array
-            for(let i = 0; i < users.length; i++){
-                if(users[i].username == username){
-                    users.splice([i], 1);
-                }
-            }
+            //     // Removes active user from user array
+            // for(let i = 0; i < users.length; i++){
+            //     if(users[i].username == username){
+            //         users.splice([i], 1);
+            //     }
+            // }
             res.send(users);
         });
     });
