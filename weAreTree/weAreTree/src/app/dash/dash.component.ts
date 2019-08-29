@@ -25,28 +25,39 @@ export class DashComponent implements OnInit {
   newUser = "";
   newEmail = "";
   newRole = "";
+  createError = "";
 
   // Delete User Variable
   killUser = "";
+  killError = ""
 
   // Promote User Variable
   boostUser = "";
   boostRole = "";
+  promoteError = "";
 
   // Create Group Variables
   newGroup = "";
   newAdmin = "";
+  gCreateError = "";
+
 
   // Destroy Group Variables
   killGroup = "";
+  gKillError = "";
+
+  // Create Channel Variables
+  newChanGroup = "";
+  newChan = "";
+  cCreateError = "";
+
+  // Destroy Channel Variables
+  killChanGroup = ""
+  killChan = ""
+  cKillError = "";
 
   // Error variables for display
   error = "";
-  createError = "";
-  killError = "";
-  promoteError = "";
-  gCreateError = "";
-  gKillError = "";
 
   constructor(private http: HttpClient) { }
 
@@ -152,6 +163,50 @@ export class DashComponent implements OnInit {
       });
     } else {
       this.gKillError = "...Just pick a room mate";
+    }
+  }
+
+  createChannel() {
+    if (this.newChanGroup && this.newChan) {
+      let chanObj = {
+        "channelGroup": this.newChanGroup,
+        "channelName": this.newChan
+      }
+
+      this.http.post<any>(BACKEND_URL + "/newChannel", chanObj).subscribe((data) => {
+        console.log(data);
+        if (data != "Oy channel Exists ay Brah") {
+          this.groups = data;
+          this.trimGroups();
+          this.newChanGroup = "";
+          this.newChan = "";
+          this.cCreateError = "";
+        } else {
+          this.error = data;
+        }
+      });
+    } else {
+      this.cCreateError = "...Mate just pick a name Ay";
+    }
+  }
+
+  destroyChannel() {
+    if (this.killChanGroup && this.killChan) {
+      let chanObj = {
+        "channelGroup": this.killChanGroup,
+        "channelName": this.killChan
+      };
+
+      this.http.post<any>(BACKEND_URL + "/destroyChannel", chanObj).subscribe((data) => {
+        console.log(data);
+        this.groups = data;
+        this.trimGroups();
+        this.killChan = "";
+        this.killChanGroup = "";
+        this.cKillError = "";
+      });
+    } else {
+      this.cKillError = "...Just pick a room mate";
     }
   }
 

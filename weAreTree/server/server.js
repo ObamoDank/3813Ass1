@@ -20,3 +20,5 @@ require("./routes/fetchUsers.js")(app, path);
 require("./routes/newGroup.js")(app, path);
 require("./routes/destroyGroup.js")(app, path);
 require("./routes/fetchGroups.js")(app, path);
+require("./routes/newChannel.js")(app, path);
+require("./routes/destroyChannel.js")(app, path);
