@@ -2,6 +2,10 @@ const fs = require("fs");
 
 module.exports = function(app, path){
     app.post("/newUser", function(req, res){
+        if(!req.body){
+            return res.sendstatus(400);
+        }
+
         let newUser = {
             "username" : req.body.newUser,
             "email" : req.body.newEmail,
@@ -13,12 +17,7 @@ module.exports = function(app, path){
         let userExists = false;
         let users = [];
 
-        console.log("Made it to new User");
-
-        if(!req.body){
-            return res.sendstatus(400);
-        }
-
+        console.log("Made it to New User.. Get comfortable..");
         fs.readFile("./data.json", "utf-8", function(err, data){
             if(err) {
                 throw err;

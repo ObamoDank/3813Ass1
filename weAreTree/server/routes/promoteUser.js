@@ -2,15 +2,14 @@ const fs = require("fs")
 
 module.exports = function(app, path){
     app.post("/promoteUser", function(req, res){
-        let username = req.body.username;
-        let newRole = req.body.role;
-
-        console.log("Made it to Promote User");
-
         if(!req.body){
             return res.sendstatus(400);
         }
 
+        let username = req.body.username;
+        let newRole = req.body.role;
+
+        console.log("Made it to Promote User.. Feel Free to relax..");
         fs.readFile("./data.json", "utf-8", function(err, data){
             if(err){
                 throw err;

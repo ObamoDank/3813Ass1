@@ -18,6 +18,9 @@
     </select>
     </div>
   </Form>
+  <div *ngIf="createError">
+    <h4>{{createError}}</h4>
+  </div>
 </div>
 
 <div *ngIf="user.role == 'super'">
@@ -31,6 +34,9 @@
     </select>
     <input type="button" value="Delete User" (click)="destroyUser()">
   </form>
+  <div *ngIf="killError">
+    <h4>{{killError}}</h4>
+  </div>
 </div>
 
 <div *ngIf="user.role == 'super' || user.role == 'admin'">
@@ -78,6 +84,35 @@
     <input type="button" value="Promote User" (click)="promoteUser()">
   </form>
 </div>
-<div *ngIf="this.error">
-  <h4>{{error}}</h4>
+<div *ngIf="promoteError">
+  <h4>{{promoteError}}</h4>
+</div>
+
+<div *ngIf="user.role == 'super' || user.role == 'admin'">
+  <h3>Create Group</h3>
+    <form>
+      <input type="text" [(ngModel)]="newGroup" name="newGroup" id="newGroup" placeholder="Group Name">
+        <ng-container *ngIf="user.role == 'admin' && newGroup">
+          <h4>Check this box if you want to be Admin</h4>
+          <input type="radio" [(ngModel)]=newAdmin name="newAdmin" value="{{username}}">
+        </ng-container>
+      <div *ngIf="gCreateError">
+        {{gCreateError}}
+      </div>
+      <ng-container *ngIf="user.role == 'super' && newGroup">
+        <h4>Assign an Administrator?</h4>
+        <select [(ngModel)]="newAdmin" name="newAdmin" id="newAdmin">
+          <option value="" selected>Not right now</option>
+          <ng-container *ngFor="let u of users">
+            <option *ngIf="u.role == 'admin'">
+              {{u.username}}
+            </option>
+          </ng-container>
+        </select>
+      </ng-container>
+      <input type="button" value="Create Group" (click)="createGroup()">
+    </form>
+    <div *ngIf="error">
+        {{error}}
+      </div>
 </div>

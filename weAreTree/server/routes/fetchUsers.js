@@ -4,15 +4,14 @@ const fs = require("fs");
 
 module.exports = function(app, path){
     app.post("/fetchUsers", function(req, res){
-        let username = req.body.username;
-        let users = {};
-
-        console.log("Made it to fetchUsers plural");
-
         if(!req.body){
             return res.sendstatus(400);
         }
 
+        let username = req.body.username;
+        let users = {};
+
+        console.log("Made it to Fetch Users Plural.. Roll a Doobskin.. ");
         fs.readFile("./data.json", "utf8", function(err, data){
             if(err){
                 throw err;
@@ -22,11 +21,9 @@ module.exports = function(app, path){
                 // Removes active user from user array
             for(let i = 0; i < users.length; i++){
                 if(users[i].username == username){
-                    console.log(users[i]);
                     users.splice([i], 1);
                 }
             }
-            console.log(users);
             res.send(users);
         });
     });
