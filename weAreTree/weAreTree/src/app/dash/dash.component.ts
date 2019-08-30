@@ -16,6 +16,9 @@ export class DashComponent implements OnInit {
   username;
   userRole = "";
   user = [];
+  isInRoom = false;
+  isRoomAdmin = false;
+  isRoomAssis = false;
 
   // Data
   users = [];
@@ -136,7 +139,8 @@ export class DashComponent implements OnInit {
 
       this.http.post<any>(BACKEND_URL + "/promoteUser", userObj).subscribe((data) => {
         console.log(data);
-        this.users = data;
+        this.users = data.users;
+        this.groups = data.groups;
         this.trimUsers();
         this.promoteError = "";
         this.boostUser = "";

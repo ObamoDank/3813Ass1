@@ -8,7 +8,6 @@ module.exports = function(app, path){
             return res.sendstatus(400);
         }
 
-        let username = req.body.username;
         let users = {};
 
         console.log("Made it to Fetch Users Plural.. Roll a Doobskin.. ");
@@ -18,12 +17,6 @@ module.exports = function(app, path){
             }
             let allData = JSON.parse(data);
             users = allData.users;
-            //     // Removes active user from user array
-            // for(let i = 0; i < users.length; i++){
-            //     if(users[i].username == username){
-            //         users.splice([i], 1);
-            //     }
-            // }
             res.send(users);
         });
     });

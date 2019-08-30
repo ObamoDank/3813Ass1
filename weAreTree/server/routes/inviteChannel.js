@@ -11,9 +11,6 @@ module.exports = function (app, path) {
         let user = req.body.username;
         let groups = [];
 
-        console.log(channel);
-        console.log(group);
-        console.log(user);
         console.log("Made it to Invite Groups.. Yeeeeeep..");
         fs.readFile("./data.json", "utf-8", function (err, data) {
             if (err) {

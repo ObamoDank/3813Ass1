@@ -1,5 +1,15 @@
 const fs = require("fs")
 
+function remove(arr, user) {
+    userExist = false;
+    for (let i = 0; i < arr.length; i++) {
+        if (arr[i] == user) {
+            arr.splice(i, 1);
+            userExist = true;
+        }
+    }
+}
+
 module.exports = function(app, path){
     app.post("/promoteUser", function(req, res){
         if(!req.body){
@@ -20,14 +30,31 @@ module.exports = function(app, path){
                     allData.users[i].role = newRole; 
                 }
             }
-            users = allData.users;
+            if(newRole == 'super'){
+                for(let i = 0; i < allData.groups.length; i++){
+                    if(allData.groups[i].admin == username){
+                        allData.groups[i].admin = "";
+                    }
+                    if(allData.groups[i].assis.includes(username)){
+                        remove(allData.groups[i].assis, username);
+                    }
+                    if(allData.groups[i].users.includes(username)){
+                        remove(allData.groups[i].users, username);
+                    }
+                    for(let j = 0; j < allData.groups[i].channels.length; j++){
+                        if(allData.groups[i].channels[j].access.includes(username)){
+                            remove(allData.groups[i].channels[j].access, username);
+                        }
+                    }
+                }
+            }
             let allDataJson = JSON.stringify(allData);
             fs.writeFile("./data.json", allDataJson, "utf-8", function(err){
                 if(err){
                     throw err;
                 }
             });
-            res.send(users);
+            res.send(allData);
         });
     });
 }

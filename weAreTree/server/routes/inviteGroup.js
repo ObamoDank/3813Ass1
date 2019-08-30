@@ -11,9 +11,6 @@ module.exports = function (app, path) {
         let role = req.body.role;
         let groups = [];
 
-        console.log(role);
-        console.log(group);
-        console.log(user);
         console.log("Made it to Invite Groups.. Oceans to the East, Mountain to the West..");
         fs.readFile("./data.json", "utf-8", function (err, data) {
             if (err) {

@@ -9,9 +9,7 @@ module.exports = function(app, path){
         let newUser = {
             "username" : req.body.newUser,
             "email" : req.body.newEmail,
-            "role" : req.body.newRole,
-            "isRoomAdmin" : false,
-            "isRoomAssis" : false
+            "role" : req.body.newRole
         }
 
         let userExists = false;

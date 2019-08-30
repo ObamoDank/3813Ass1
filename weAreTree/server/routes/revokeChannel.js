@@ -21,9 +21,6 @@ function remove(arr, user) {
             let user = req.body.username;
             let groups = [];
 
-            console.log(channel);
-            console.log(group);
-            console.log(user);
             console.log("Made it to Revoke Channels.. Yeeeeeep..");
             fs.readFile("./data.json", "utf-8", function (err, data) {
                 if (err) {

@@ -1,0 +1,15 @@
+body{
+    text-align: center;
+}
+
+form{
+    display: inline-block;
+}
+
+.button{
+    margin: auto;
+}
+
+.inp{
+    margin: auto;
+}

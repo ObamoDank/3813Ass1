@@ -1,469 +1,503 @@
 <body>
   <h1>Greetings {{user.username}}</h1>
+  <h2>Welcome to your Dashboard</h2>
 
-  <div *ngIf="user.role == 'super' || user.role == 'admin'">
-    <h3>Create User</h3>
-    <Form>
-      <input class="inp" type="text" [(ngModel)]="newUser" name="newUser" id="newUser" placeholder="Username" /><br>
-      <input class="inp" type="text" [(ngModel)]="newEmail" name="newEmail" id="newEmail" placeholder="Email" /><br>
-      <select [(ngModel)]="newRole" name="newRole" required>
-        <option value="" selected>Select Role</option>
-        <option value="user">User</option>
-        <option value="assis">Group Assistant</option>
-        <option value="admin" *ngIf="user.role == 'super'">Group Administrator</option>
-      </select>
-      <input class="button" type="button" value="Create User" (click)="createUser()" />
-      <div *ngIf="newRole == 'Group Assis'">
-        <select>
-          <option disabled selected>Which Group?</option>
-        </select>
+  <div class="dashboard" *ngIf="user.role != 'user'">
+    <div class="userForms" *ngIf="user.role == 'super' || user.role == 'admin'">
+      <h2>Create, Remove or Promote Users</h2>
+  
+      <div *ngIf="user.role == 'super' || user.role == 'admin'">
+        <h3>Create User</h3>
+        <Form>
+          <input class="inp" type="text" [(ngModel)]="newUser" name="newUser" id="newUser"
+            placeholder="Username" /><br><br>
+          <input class="inp" type="text" [(ngModel)]="newEmail" name="newEmail" id="newEmail"
+            placeholder="Email" /><br><br>
+          <select [(ngModel)]="newRole" name="newRole" required>
+            <option class="op1" value="" selected>Select Role</option>
+            <option value="user">User</option>
+            <option value="assis">Group Assistant</option>
+            <option value="admin" *ngIf="user.role == 'super'">Group Administrator</option>
+          </select><br><br>
+          <input class="button" type="button" value="Create User" (click)="createUser()" />
+        </Form>
+        <div *ngIf="createError">
+          <h4>{{createError}}</h4>
+        </div>
       </div>
-    </Form>
-    <div *ngIf="createError">
-      <h4>{{createError}}</h4>
-    </div>
-  </div>
 
-  <div *ngIf="user.role == 'super'">
-    <h3>Delete User</h3>
-    <form>
-      <select [(ngModel)]="killUser" name="killUser" required>
-        <option value="" selected>Select User</option>
-        <option *ngFor="let u of users">
-          {{u.username}}
-        </option>
-      </select>
-      <input class="button" type="button" value="Delete User" (click)="destroyUser()">
-    </form>
-    <div *ngIf="killError">
-      <h4>{{killError}}</h4>
-    </div>
-  </div>
-
-  <div *ngIf="user.role == 'super' || user.role == 'admin'">
-    <h3>Promote User</h3>
-    <form>
-      <select [(ngModel)]="boostUser" name="boostUser" required>
-        <option value="" selected>Select User</option>
-        <ng-container *ngFor="let u of users">
-          <option *ngIf="user.role == 'super' && u.role != 'super'">
-            {{u.username}}
-          </option>
-        </ng-container>
-        <ng-container *ngFor="let u of users">
-          <option *ngIf="user.role == 'admin' && u.role == 'user'">
-            {{u.username}}
-          </option>
-        </ng-container>
-      </select>
-      <ng-container *ngIf="boostUser">
-        <h4>Promote {{boostUser}} to which role?</h4>
-        <select [(ngModel)]="boostRole" name="boostRole" required>
-          <option value="" selected>Select Role</option>
-          <ng-container *ngIf="user.role == 'super'">
-            <ng-container *ngFor="let u of users">
-              <option value="super" *ngIf="u.username == boostUser && u.role != super">
-                Super
-              </option>
-              <option value="admin" *ngIf="u.username == boostUser && u.role == 'user' || u.role == 'assis'">
-                Group Administrator
-              </option>
-              <option value="assis" *ngIf="u.username == boostUser && u.role == 'user'">
-                Group Assistant
-              </option>
-            </ng-container>
-          </ng-container>
-          <ng-container *ngIf="user.role == 'admin'">
-            <ng-container *ngFor="let u of users">
-              <option value="assis" *ngIf="u.username == boostUser && u.role == 'user'">
-                Group Assistant
-              </option>
-            </ng-container>
-          </ng-container>
-        </select>
-      </ng-container>
-      <input class="button" type="button" value="Promote User" (click)="promoteUser()">
-    </form>
-  </div>
-  <div *ngIf="promoteError">
-    <h4>{{promoteError}}</h4>
-  </div>
-
-  <div *ngIf="user.role == 'super' || user.role == 'admin'">
-    <h3>Create Group</h3>
-    <form>
-      <input class="inp" type="text" [(ngModel)]="newGroup" name="newGroup" id="newGroup" placeholder="Group Name">
-      <ng-container *ngIf="user.role == 'admin' && newGroup">
-        <h4>Check this box if you want to be Admin</h4>
-        <input type="radio" [(ngModel)]=newAdmin name="newAdmin" value="{{username}}">
-      </ng-container>
-      <div *ngIf="gCreateError">
-        {{gCreateError}}
-      </div>
-      <ng-container *ngIf="user.role == 'super' && newGroup">
-        <h4>Assign an Administrator?</h4>
-        <select [(ngModel)]="newAdmin" name="newAdmin" id="newAdmin">
-          <option value="" selected>Not right now</option>
-          <ng-container *ngFor="let u of users">
-            <option *ngIf="u.role == 'admin'">
+      <div *ngIf="user.role == 'super'">
+        <h3>Delete User</h3>
+        <form>
+          <select [(ngModel)]="killUser" name="killUser" required>
+            <option class="op1" value="" selected>Select User</option>
+            <option *ngFor="let u of users">
               {{u.username}}
             </option>
-          </ng-container>
-        </select>
-      </ng-container>
-      <input class="button" type="button" value="Create Group" (click)="createGroup()">
-    </form>
-    <div *ngIf="error">
-      {{error}}
-    </div>
-  </div>
+          </select><br><br>
+          <input class="button" type="button" value="Delete User" (click)="destroyUser()">
+        </form>
+        <div *ngIf="killError">
+          <h4>{{killError}}</h4>
+        </div>
+      </div>
 
-  <div *ngIf="user.role == 'super' || user.role == 'admin'">
-    <h3>Delete Group</h3>
-    <form>
-      <select [(ngModel)]="killGroup" name="killGroup" required>
-        <option value="" selected>Select Group</option>
-        <ng-container *ngIf="user.role == 'super'">
-          <option *ngFor="let group of groups">
-            {{group.name}}
-          </option>
-        </ng-container>
-        <ng-container *ngIf="user.role == 'admin'">
-          <ng-container *ngFor="let group of groups">
-            <option *ngIf="group.admin == username">
-              {{group.name}}
-            </option>
-          </ng-container>
-        </ng-container>
-      </select>
-      <input class="button" type="button" value="Delete Group" (click)="destroyGroup()">
-    </form>
-    <div *ngIf="gKillError">
-      <h4>{{gKillError}}</h4>
-    </div>
-  </div>
-
-  <div *ngIf="user.role == 'super' || user.role == 'admin' || user.role == 'assis'">
-    <h3> Create Channel </h3>
-    <form>
-      <ng-container *ngIf="user.role == 'super'">
-        <select [(ngModel)]="newChanGroup" name="newChanGroup" required>
-          <option value="" selected>Select Group</option>
-          <option *ngFor="let group of groups">
-            {{group.name}}
-          </option>
-        </select>
-      </ng-container>
-      <ng-container *ngIf="user.role == 'admin' || user.role == 'assis'">
-        <select [(ngModel)]="newChanGroup" name="newChanGroup" required>
-          <option value="" selected>Select Group</option>
-          <ng-container *ngFor="let group of groups">
-            <option *ngIf="username == group.admin || group.assis.includes(username)">
-              {{group.name}}
-            </option>
-          </ng-container>
-        </select>
-      </ng-container>
-      <h4> New Channel Name</h4>
-      <input class="inp" type="text" [(ngModel)]="newChan" name="newChan" id="newChan">
-      <input class="button" type="button" value="Create Channel" (click)="createChannel()">
-    </form>
-    <div *ngIf="cCreateError">
-      <h4>{{cCreateError}}</h4>
-    </div>
-  </div>
-
-  <div *ngIf="user.role == 'super' || user.role == 'admin' || user.role == 'assis'">
-    <h3>Delete Channel</h3>
-    <form>
-      <ng-container *ngIf="user.role == 'super'">
-        <select [(ngModel)]="killChanGroup" name="killChanGroup" required>
-          <option value="" selected>Select Group</option>
-          <option *ngFor="let group of groups">
-            {{group.name}}
-          </option>
-        </select>
-      </ng-container>
-      <ng-container *ngIf="user.role == 'admin' || user.role == 'assis'">
-        <select [(ngModel)]="killChanGroup" name="killChanGroup" required>
-          <option value="" selected>Select Group</option>
-          <ng-container *ngFor="let group of groups">
-            <option *ngIf="username == group.admin || group.assis.includes(username)">
-              {{group.name}}
-            </option>
-          </ng-container>
-        </select>
-      </ng-container>
-      <ng-container *ngIf="killChanGroup">
-        <select [(ngModel)]="killChan" name="killChan" required>
-          <option value="" selected>Select Group</option>
-          <ng-container *ngFor="let group of groups">
-            <ng-container *ngIf="group.name == killChanGroup">
-              <option *ngFor="let channel of group.channels">
-                {{channel.name}}
+      <div *ngIf="user.role == 'super' || user.role == 'admin'">
+        <h3>Promote User</h3>
+        <form>
+          <select [(ngModel)]="boostUser" name="boostUser" required>
+            <option class="op1" value="" selected>Select User</option>
+            <ng-container *ngFor="let u of users">
+              <option *ngIf="user.role == 'super' && u.role != 'super'">
+                {{u.username}}
               </option>
             </ng-container>
-          </ng-container>
-        </select>
-      </ng-container>
-      <input class="button" type="button" value="Delete Channel" (click)="destroyChannel()">
-    </form>
-    <div *ngIf="cKillError">
-      <h4>{{cKillError}}</h4>
+            <ng-container *ngFor="let u of users">
+              <option *ngIf="user.role == 'admin' && u.role == 'user'">
+                {{u.username}}
+              </option>
+            </ng-container>
+          </select><br>
+          <ng-container *ngIf="boostUser">
+            <h4>Promote {{boostUser}} to which role?</h4>
+            <select [(ngModel)]="boostRole" name="boostRole" required>
+              <option class="op1" value="" selected>Select Role</option>
+              <ng-container *ngIf="user.role == 'super'">
+                <ng-container *ngFor="let u of users">
+                  <ng-container *ngIf="u.username == boostUser">
+                    <option value="super" *ngIf="u.role != super">
+                      Super
+                    </option>
+                    <option value="admin" *ngIf="u.role == 'user' || u.role == 'assis'">
+                      Group Administrator
+                    </option>
+                    <option value="assis" *ngIf="u.role == 'user'">
+                      Group Assistant
+                    </option>
+                  </ng-container>
+                </ng-container>
+              </ng-container>
+              <ng-container *ngIf="user.role == 'admin'">
+                <ng-container *ngFor="let u of users">
+                  <option value="assis" *ngIf="u.username == boostUser && u.role == 'user'">
+                    Group Assistant
+                  </option>
+                </ng-container>
+              </ng-container>
+            </select><br>
+          </ng-container><br>
+          <input class="button" type="button" value="Promote User" (click)="promoteUser()">
+        </form>
+      </div>
+      <div *ngIf="promoteError">
+        <h4>{{promoteError}}</h4>
+      </div>
     </div>
-  </div>
 
-  <div *ngIf="user.role == 'super' || user.role == 'admin'">
-    <h3> Invite User to Group </h3>
-    <form>
-      <ng-container *ngIf="user.role == 'super'">
-        <select [(ngModel)]="inviteGroupName" name="inviteGroupName" required>
-          <option value="" selected>Select Group</option>
-          <option *ngFor="let group of groups">
-            {{group.name}}
-          </option>
-        </select>
-      </ng-container>
-      <ng-container *ngIf="user.role == 'admin'">
-        <select [(ngModel)]="inviteGroupName" name="inviteGroupName" required>
-          <option value="" selected>Select Group</option>
-          <ng-container *ngFor="let group of groups">
-            <option *ngIf="username == group.admin">
-              {{group.name}}
-            </option>
+    <div class="groupForms" *ngIf="user.role == 'super' || user.role == 'admin'">
+      <h2>Create or Destroy Groups</h2>
+      <div *ngIf="user.role == 'super' || user.role == 'admin'">
+        <h3>Create Group</h3>
+        <form>
+          <input class="inp" type="text" [(ngModel)]="newGroup" name="newGroup" id="newGroup" placeholder="Group Name">
+          <ng-container *ngIf="user.role == 'admin' && newGroup">
+            <h4>Check this box if you want to be Admin</h4>
+            <input type="radio" [(ngModel)]=newAdmin name="newAdmin" value="{{username}}">
           </ng-container>
-        </select>
-      </ng-container>
-      <ng-container *ngIf="inviteGroupName">
-        <select [(ngModel)]="inviteGroupUser" name="inviteGroupUser" required>
-          <option value="" selected>Select User</option>
-          <ng-container *ngFor="let group of groups">
-            <ng-container *ngIf="group.name == inviteGroupName">
+          <div *ngIf="gCreateError">
+            {{gCreateError}}
+          </div>
+          <ng-container *ngIf="user.role == 'super' && newGroup">
+            <h4>Assign an Administrator?</h4>
+            <select [(ngModel)]="newAdmin" name="newAdmin" id="newAdmin">
+              <option class="op1" value="" selected>Not right now</option>
               <ng-container *ngFor="let u of users">
-                <option
-                  *ngIf="u.username != group.admin && !group.users.includes(u.username) && !group.assis.includes(u.username) && u.role != 'super'">
+                <option *ngIf="u.role == 'admin'">
                   {{u.username}}
                 </option>
               </ng-container>
-            </ng-container>
-          </ng-container>
-        </select>
-      </ng-container>
-      <ng-container *ngIf="inviteGroupUser">
-        <select [(ngModel)]="inviteGroupRole" name="inviteGroupRole" required>
-          <option value="" selected>As?</option>
-          <ng-container *ngFor="let group of groups">
-            <ng-container *ngIf="group.name == inviteGroupName">
-              <ng-container *ngFor="let u of users">
-                <ng-container *ngIf="inviteGroupUser == u.username">
-                  <option value="admin" *ngIf="user.role == 'super' && !group.admin && u.role == 'admin'">
-                    Admininstrator
-                  </option>
-                  <option value="assis" *ngIf="u.role == 'assis' || u.role == 'admin'">
-                    Assistant
-                  </option>
-                  <option value="user">
-                    User
-                  </option>
-                </ng-container>
-              </ng-container>
-            </ng-container>
-          </ng-container>
-        </select>
-      </ng-container>
-      <input class="button" type="button" value="Invite {{inviteGroupUser}}" (click)="inviteGroup()">
-    </form>
-    <div *ngIf="iGroupError">
-      <h4>{{iGroupError}}</h4>
-    </div>
-  </div>
+            </select>
+          </ng-container><br><br>
+          <input class="button" type="button" value="Create Group" (click)="createGroup()">
+        </form>
+        <div *ngIf="error">
+          {{error}}
+        </div>
+      </div>
 
-  <div *ngIf="user.role == 'super' || user.role == 'admin'">
-    <h3> Remove User From Group </h3>
-    <form>
-      <ng-container *ngIf="user.role == 'super'">
-        <select [(ngModel)]="revokeGroupName" name="revokeGroupName" required>
-          <option value="" selected>Select Group</option>
-          <option *ngFor="let group of groups">
-            {{group.name}}
-          </option>
-        </select>
-      </ng-container>
-      <ng-container *ngIf="user.role == 'admin'">
-        <select [(ngModel)]="revokeGroupName" name="revokeGroupName" required>
-          <option value="" selected>Select Group</option>
-          <ng-container *ngFor="let group of groups">
-            <option *ngIf="username == group.admin">
-              {{group.name}}
-            </option>
-          </ng-container>
-        </select>
-      </ng-container>
-      <ng-container *ngIf="revokeGroupName">
-        <ng-container *ngIf="user.role == 'super'">
-          <select [(ngModel)]="revokeGroupUser" name="revokeGroupUser" required>
-            <option value="" selected>Select User</option>
-            <ng-container *ngFor="let group of groups">
-              <ng-container *ngIf="group.name == revokeGroupName">
-                <ng-container *ngFor="let u of users">
-                  <option
-                    *ngIf="u.username == group.admin || group.users.includes(u.username) || group.assis.includes(u.username) && u.role != 'super'">
-                    {{u.username}}
-                  </option>
-                </ng-container>
-              </ng-container>
-            </ng-container>
-          </select>
-        </ng-container>
-        <ng-container *ngIf="user.role == 'admin'">
-          <select [(ngModel)]="revokeGroupUser" name="revokeGroupUser" required>
-            <option value="" selected>Select User</option>
-            <ng-container *ngFor="let group of groups">
-              <ng-container *ngIf="group.name == revokeGroupName">
-                <ng-container *ngFor="let u of users">
-                  <option
-                    *ngIf="u.username != group.admin && group.users.includes(u.username) || group.assis.includes(u.username) && u.role != 'super'">
-                    {{u.username}}
-                  </option>
-                </ng-container>
-              </ng-container>
-            </ng-container>
-          </select>
-        </ng-container>
-      </ng-container>
-      <input class="button" type="button" value="Remove {{revokeGroupUser}}" (click)="revokeGroup()">
-    </form>
-    <div *ngIf="rGroupError">
-      <h4>{{rGroupError}}</h4>
-    </div>
-  </div>
-
-  <div *ngIf="user.role == 'super' || user.role == 'admin' || user.role == 'assis'">
-    <h3> Invite User to Channel </h3>
-    <form>
-      <ng-container *ngIf="user.role == 'super'">
-        <select [(ngModel)]="inviteChanGroupName" name="inviteChanGroupName" required>
-          <option value="" selected>Select Group</option>
-          <option *ngFor="let group of groups">
-            {{group.name}}
-          </option>
-        </select>
-      </ng-container>
-      <ng-container *ngIf="user.role == 'admin' || user.role == 'assis'">
-        <select [(ngModel)]="inviteChanGroupName" name="inviteChanGroupName" required>
-          <option value="" selected>Select Group</option>
-          <ng-container *ngFor="let group of groups">
-            <option *ngIf="username == group.admin || group.assis.includes(username)">
-              {{group.name}}
-            </option>
-          </ng-container>
-        </select>
-      </ng-container>
-      <ng-container *ngIf="inviteChanGroupName">
-        <select [(ngModel)]="inviteChanName" name="inviteChanName" required>
-          <option value="" selected>Select Channel</option>
-          <ng-container *ngFor="let group of groups">
-            <ng-container *ngIf="group.name == inviteChanGroupName">
-              <option *ngFor="let channel of group.channels">
-                {{channel.name}}
+      <div *ngIf="user.role == 'super' || user.role == 'admin'">
+        <h3>Destroy Group</h3>
+        <form>
+          <select [(ngModel)]="killGroup" name="killGroup" required>
+            <option class="op1" value="" selected>Select Group</option>
+            <ng-container *ngIf="user.role == 'super'">
+              <option *ngFor="let group of groups">
+                {{group.name}}
               </option>
             </ng-container>
+            <ng-container *ngIf="user.role == 'admin'">
+              <ng-container *ngFor="let group of groups">
+                <option *ngIf="group.admin == username">
+                  {{group.name}}
+                </option>
+              </ng-container>
+            </ng-container>
+          </select><br>
+          <br>
+          <input class="button" type="button" value="Delete Group" (click)="destroyGroup()">
+        </form>
+        <div *ngIf="gKillError">
+          <h4>{{gKillError}}</h4>
+        </div>
+      </div>
+
+      <div *ngIf="user.role == 'super' || user.role == 'admin'">
+        <h3> Invite User to Group </h3>
+        <form>
+          <ng-container *ngIf="user.role == 'super'">
+            <select [(ngModel)]="inviteGroupName" name="inviteGroupName" required>
+              <option class="op1" value="" selected>Select Group</option>
+              <option *ngFor="let group of groups">
+                {{group.name}}
+              </option>
+            </select><br><br>
           </ng-container>
-        </select>
-      </ng-container>
-      <ng-container *ngIf="inviteChanName">
-        <select [(ngModel)]="inviteChanUser" name="inviteChanUser" required>
-          <option value="" selected>Select User</option>
-          <ng-container *ngFor="let group of groups">
-            <ng-container *ngIf="group.name == inviteChanGroupName">
-              <ng-container *ngFor="let channel of group.channels">
-                <ng-container *ngIf="channel.name == inviteChanName">
+          <ng-container *ngIf="user.role == 'admin'">
+            <select [(ngModel)]="inviteGroupName" name="inviteGroupName" required>
+              <option class="op1" value="" selected>Select Group</option>
+              <ng-container *ngFor="let group of groups">
+                <option *ngIf="username == group.admin">
+                  {{group.name}}
+                </option>
+              </ng-container>
+            </select><br><br>
+          </ng-container>
+          <ng-container *ngIf="inviteGroupName">
+            <select [(ngModel)]="inviteGroupUser" name="inviteGroupUser" required>
+              <option class="op1" value="" selected>Select User</option>
+              <ng-container *ngFor="let group of groups">
+                <ng-container *ngIf="group.name == inviteGroupName">
                   <ng-container *ngFor="let u of users">
                     <option
-                      *ngIf="u.username != group.admin && !channel.access.includes(u.username) && !group.assis.includes(u.username) && u.role != 'super'">
+                      *ngIf="u.username != group.admin && !group.users.includes(u.username) && !group.assis.includes(u.username) && u.role != 'super'">
                       {{u.username}}
                     </option>
                   </ng-container>
                 </ng-container>
               </ng-container>
-            </ng-container>
+            </select><br><br>
           </ng-container>
-        </select>
-      </ng-container>
-      <input class="button" type="button" value="Invite {{inviteChanUser}}" (click)="inviteChannel()">
-    </form>
-    <div *ngIf="iChanError">
-      <h4>{{iChanError}}</h4>
-    </div>
-  </div>
-
-  <div *ngIf="user.role == 'super' || user.role == 'admin' || user.role == 'assis'">
-    <h3> Remove User from Channel </h3>
-    <form>
-      <ng-container *ngIf="user.role == 'super'">
-        <select [(ngModel)]="revokeChanGroupName" name="revokeChanGroupName" required>
-          <option value="" selected>Select Group</option>
-          <option *ngFor="let group of groups">
-            {{group.name}}
-          </option>
-        </select>
-      </ng-container>
-      <ng-container *ngIf="user.role == 'admin' || user.role == 'assis'">
-        <select [(ngModel)]="revokeChanGroupName" name="revokeChanGroupName" required>
-          <option value="" selected>Select Group</option>
-          <ng-container *ngFor="let group of groups">
-            <option *ngIf="username == group.admin || group.assis.includes(username)">
-              {{group.name}}
-            </option>
-          </ng-container>
-        </select>
-      </ng-container>
-      <ng-container *ngIf="revokeChanGroupName">
-        <select [(ngModel)]="revokeChanName" name="revokeChanName" required>
-          <option value="" selected>Select Channel</option>
-          <ng-container *ngFor="let group of groups">
-            <ng-container *ngIf="group.name == revokeChanGroupName">
-              <option *ngFor="let channel of group.channels">
-                {{channel.name}}
-              </option>
-            </ng-container>
-          </ng-container>
-        </select>
-      </ng-container>
-      <ng-container *ngIf="revokeChanName">
-        <select [(ngModel)]="revokeChanUser" name="revokeChanUser" required>
-          <option value="" selected>Select User</option>
-          <ng-container *ngFor="let group of groups">
-            <ng-container *ngIf="group.name == revokeChanGroupName">
-              <ng-container *ngFor="let channel of group.channels">
-                <ng-container *ngIf="channel.name == revokeChanName">
+          <ng-container *ngIf="inviteGroupUser">
+            <select [(ngModel)]="inviteGroupRole" name="inviteGroupRole" required>
+              <option class="op1" value="" selected>As?</option>
+              <ng-container *ngFor="let group of groups">
+                <ng-container *ngIf="group.name == inviteGroupName">
                   <ng-container *ngFor="let u of users">
-                    <option *ngIf="channel.access.includes(u.username) && u.role != 'super'">
-                      {{u.username}}
-                    </option>
+                    <ng-container *ngIf="inviteGroupUser == u.username">
+                      <option value="admin" *ngIf="user.role == 'super' && !group.admin && u.role == 'admin'">
+                        Admininstrator
+                      </option>
+                      <option value="assis" *ngIf="u.role == 'assis' || u.role == 'admin'">
+                        Assistant
+                      </option>
+                      <option value="user">
+                        User
+                      </option>
+                    </ng-container>
                   </ng-container>
                 </ng-container>
               </ng-container>
-            </ng-container>
+            </select><br>
+          </ng-container><br>
+          <input class="button" type="button" value="Invite {{inviteGroupUser}}" (click)="inviteGroup()">
+        </form>
+        <div *ngIf="iGroupError">
+          <h4>{{iGroupError}}</h4>
+        </div>
+      </div>
+
+      <div *ngIf="user.role == 'super' || user.role == 'admin'">
+        <h3> Remove User From Group </h3>
+        <form>
+          <ng-container *ngIf="user.role == 'super'">
+            <select [(ngModel)]="revokeGroupName" name="revokeGroupName" required>
+              <option class="op1" value="" selected>Select Group</option>
+              <option *ngFor="let group of groups">
+                {{group.name}}
+              </option>
+            </select><br><br>
           </ng-container>
-        </select>
-      </ng-container>
-      <input class="button" type="button" value="Revoke {{revokeChanUser}}" (click)="revokeChannel()">
-    </form>
-    <div *ngIf="rChanError">
-      <h4>{{rChanError}}</h4>
+          <ng-container *ngIf="user.role == 'admin'">
+            <select [(ngModel)]="revokeGroupName" name="revokeGroupName" required>
+              <option class="op1" value="" selected>Select Group</option>
+              <ng-container *ngFor="let group of groups">
+                <option *ngIf="username == group.admin">
+                  {{group.name}}
+                </option>
+              </ng-container>
+            </select><br><br>
+          </ng-container>
+          <ng-container *ngIf="revokeGroupName">
+            <ng-container *ngIf="user.role == 'super'">
+              <select [(ngModel)]="revokeGroupUser" name="revokeGroupUser" required>
+                <option class="op1" value="" selected>Select User</option>
+                <ng-container *ngFor="let group of groups">
+                  <ng-container *ngIf="group.name == revokeGroupName">
+                    <ng-container *ngFor="let u of users">
+                      <option
+                        *ngIf="u.username == group.admin || group.users.includes(u.username) || group.assis.includes(u.username) && u.role != 'super'">
+                        {{u.username}}
+                      </option>
+                    </ng-container>
+                  </ng-container>
+                </ng-container>
+              </select><br><br>
+            </ng-container>
+            <ng-container *ngIf="user.role == 'admin'">
+              <select [(ngModel)]="revokeGroupUser" name="revokeGroupUser" required>
+                <option class="op1" value="" selected>Select User</option>
+                <ng-container *ngFor="let group of groups">
+                  <ng-container *ngIf="group.name == revokeGroupName">
+                    <ng-container *ngFor="let u of users">
+                      <option
+                        *ngIf="u.username != group.admin && group.users.includes(u.username) || group.assis.includes(u.username) && u.role != 'super'">
+                        {{u.username}}
+                      </option>
+                    </ng-container>
+                  </ng-container>
+                </ng-container>
+              </select><br>
+            </ng-container>
+          </ng-container><br>
+          <input class="button" type="button" value="Remove {{revokeGroupUser}}" (click)="revokeGroup()">
+        </form>
+        <div *ngIf="rGroupError">
+          <h4>{{rGroupError}}</h4>
+        </div>
+      </div>
+    </div>
+
+    <div class="channelForms">
+      <h2>Create or Destroy Channels</h2>
+      <div *ngIf="user.role == 'super' || user.role == 'admin' || user.role == 'assis'">
+        <h3> Create Channel </h3>
+        <form>
+          <ng-container *ngIf="user.role == 'super'">
+            <select [(ngModel)]="newChanGroup" name="newChanGroup" required>
+              <option class="op1" value="" selected>Select Group</option>
+              <option *ngFor="let group of groups">
+                {{group.name}}
+              </option>
+            </select><br><br>
+          </ng-container>
+          <ng-container *ngIf="user.role == 'admin' || user.role == 'assis'">
+            <select [(ngModel)]="newChanGroup" name="newChanGroup" required>
+              <option class="op1" value="" selected>Select Group</option>
+              <ng-container *ngFor="let group of groups">
+                <option *ngIf="username == group.admin || group.assis.includes(username)">
+                  {{group.name}}
+                </option>
+              </ng-container>
+            </select><br><br>
+          </ng-container>
+          <ng-container *ngIf="newChanGroup">
+            <h4> New Channel Name</h4>
+            <input class="inp" type="text" [(ngModel)]="newChan" name="newChan" id="newChan"
+              placeholder="Channel Name"><br><br>
+            <input class="button" type="button" value="Create Channel" (click)="createChannel()">
+          </ng-container>
+        </form>
+        <div *ngIf="cCreateError">
+          <h4>{{cCreateError}}</h4>
+        </div>
+      </div>
+
+      <div *ngIf="user.role == 'super' || user.role == 'admin' || user.role == 'assis'">
+        <h3>Destroy Channel</h3>
+        <form>
+          <ng-container *ngIf="user.role == 'super'">
+            <select [(ngModel)]="killChanGroup" name="killChanGroup" required>
+              <option class="op1" value="" selected>Select Group</option>
+              <option *ngFor="let group of groups">
+                {{group.name}}
+              </option>
+            </select><br><br>
+          </ng-container>
+          <ng-container *ngIf="user.role == 'admin' || user.role == 'assis'">
+            <select [(ngModel)]="killChanGroup" name="killChanGroup" required>
+              <option class="op1" value="" selected>Select Group</option>
+              <ng-container *ngFor="let group of groups">
+                <option *ngIf="username == group.admin || group.assis.includes(username)">
+                  {{group.name}}
+                </option>
+              </ng-container>
+            </select><br><br>
+          </ng-container>
+          <ng-container *ngIf="killChanGroup">
+            <select [(ngModel)]="killChan" name="killChan" required>
+              <option class="op1" value="" selected>Select Group</option>
+              <ng-container *ngFor="let group of groups">
+                <ng-container *ngIf="group.name == killChanGroup">
+                  <option *ngFor="let channel of group.channels">
+                    {{channel.name}}
+                  </option>
+                </ng-container>
+              </ng-container>
+            </select><br>
+          </ng-container><br>
+          <input class="button" type="button" value="Delete Channel" (click)="destroyChannel()">
+        </form>
+        <div *ngIf="cKillError">
+          <h4>{{cKillError}}</h4>
+        </div>
+      </div>
+
+      <div *ngIf="user.role == 'super' || user.role == 'admin' || user.role == 'assis'">
+        <h3> Invite User to Channel </h3>
+        <form>
+          <ng-container *ngIf="user.role == 'super'">
+            <select [(ngModel)]="inviteChanGroupName" name="inviteChanGroupName" required>
+              <option class="op1" value="" selected>Select Group</option>
+              <option *ngFor="let group of groups">
+                {{group.name}}
+              </option>
+            </select><br><br>
+          </ng-container>
+          <ng-container *ngIf="user.role == 'admin' || user.role == 'assis'">
+            <select [(ngModel)]="inviteChanGroupName" name="inviteChanGroupName" required>
+              <option class="op1" value="" selected>Select Group</option>
+              <ng-container *ngFor="let group of groups">
+                <option *ngIf="username == group.admin || group.assis.includes(username)">
+                  {{group.name}}
+                </option>
+              </ng-container>
+            </select><br><br>
+          </ng-container>
+          <ng-container *ngIf="inviteChanGroupName">
+            <select [(ngModel)]="inviteChanName" name="inviteChanName" required>
+              <option class="op1" value="" selected>Select Channel</option>
+              <ng-container *ngFor="let group of groups">
+                <ng-container *ngIf="group.name == inviteChanGroupName">
+                  <option *ngFor="let channel of group.channels">
+                    {{channel.name}}
+                  </option>
+                </ng-container>
+              </ng-container>
+            </select><br><br>
+          </ng-container>
+          <ng-container *ngIf="inviteChanName">
+            <select [(ngModel)]="inviteChanUser" name="inviteChanUser" required>
+              <option class="op1" value="" selected>Select User</option>
+              <ng-container *ngFor="let group of groups">
+                <ng-container *ngIf="group.name == inviteChanGroupName">
+                  <ng-container *ngFor="let channel of group.channels">
+                    <ng-container *ngIf="channel.name == inviteChanName">
+                      <ng-container *ngFor="let u of users">
+                        <option
+                          *ngIf="u.username != group.admin && !channel.access.includes(u.username) && !group.assis.includes(u.username) && u.role != 'super'">
+                          {{u.username}}
+                        </option>
+                      </ng-container>
+                    </ng-container>
+                  </ng-container>
+                </ng-container>
+              </ng-container>
+            </select><br>
+          </ng-container><br>
+          <input class="button" type="button" value="Invite {{inviteChanUser}}" (click)="inviteChannel()">
+        </form>
+        <div *ngIf="iChanError">
+          <h4>{{iChanError}}</h4>
+        </div>
+      </div>
+
+      <div *ngIf="user.role == 'super' || user.role == 'admin' || user.role == 'assis'">
+        <h3> Remove User from Channel </h3>
+        <form>
+          <ng-container *ngIf="user.role == 'super'">
+            <select [(ngModel)]="revokeChanGroupName" name="revokeChanGroupName" required>
+              <option class="op1" value="" selected>Select Group</option>
+              <option *ngFor="let group of groups">
+                {{group.name}}
+              </option>
+            </select><br><br>
+          </ng-container>
+          <ng-container *ngIf="user.role == 'admin' || user.role == 'assis'">
+            <select [(ngModel)]="revokeChanGroupName" name="revokeChanGroupName" required>
+              <option class="op1" value="" selected>Select Group</option>
+              <ng-container *ngFor="let group of groups">
+                <option *ngIf="username == group.admin || group.assis.includes(username)">
+                  {{group.name}}
+                </option>
+              </ng-container>
+            </select><br><br>
+          </ng-container>
+          <ng-container *ngIf="revokeChanGroupName">
+            <select [(ngModel)]="revokeChanName" name="revokeChanName" required>
+              <option class="op1" value="" selected>Select Channel</option>
+              <ng-container *ngFor="let group of groups">
+                <ng-container *ngIf="group.name == revokeChanGroupName">
+                  <option *ngFor="let channel of group.channels">
+                    {{channel.name}}
+                  </option>
+                </ng-container>
+              </ng-container>
+            </select><br><br>
+          </ng-container>
+          <ng-container *ngIf="revokeChanName">
+            <select [(ngModel)]="revokeChanUser" name="revokeChanUser" required>
+              <option class="op1" value="" selected>Select User</option>
+              <ng-container *ngFor="let group of groups">
+                <ng-container *ngIf="group.name == revokeChanGroupName">
+                  <ng-container *ngFor="let channel of group.channels">
+                    <ng-container *ngIf="channel.name == revokeChanName">
+                      <ng-container *ngFor="let u of users">
+                        <option *ngIf="channel.access.includes(u.username) && u.role != 'super'">
+                          {{u.username}}
+                        </option>
+                      </ng-container>
+                    </ng-container>
+                  </ng-container>
+                </ng-container>
+              </ng-container>
+            </select><br>
+          </ng-container><br>
+          <input class="button" type="button" value="Revoke {{revokeChanUser}}" (click)="revokeChannel()">
+        </form>
+        <div *ngIf="rChanError">
+          <h4>{{rChanError}}</h4>
+        </div>
+      </div>
     </div>
   </div>
-
 
 
   <div>
     <h3> Your Groups & Channels </h3>
-    <ng-container *ngFor="let group of groups">
-      <h4>{{group.name}}</h4>
-      <p *ngFor="let channel of group.channels">{{channel.name}}</p>
-    </ng-container>
+    <form>
+      <select [(ngModel)]="goToGroup" name="goToGroup">
+        <option class="op1" value="" selected>Your Groups</option>
+        <ng-container *ngFor="let group of groups">
+          <option>
+            {{group.name}}
+          </option>
+        </ng-container>
+      </select><br><br>
+      <input type="button" class="button" value="Go To Group" (click)="enterGroup()">
+    </form><br><br>
+    <form *ngIf="goToGroup">
+      <select [(ngModel)]="goToChannel" name="goToChannel">
+        <option class="op1" value="" selected>Your Groups</option>
+        <ng-container *ngFor="let group of groups">
+          <ng-container *ngIf="goToGroup == group.name">
+            <option *ngFor="let channel of group.channels">
+              {{channel.name}}
+            </option>
+          </ng-container>
+        </ng-container>
+      </select><br><br>
+      <input *ngIf="goToGroup" type="button" class="button" value="Go To Channel" (click)="enterChannel()">
+    </form>
   </div>
-
 
 </body>
