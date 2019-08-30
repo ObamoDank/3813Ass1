@@ -249,6 +249,28 @@
           </ng-container>
         </select>
       </ng-container>
+      <ng-container *ngIf="inviteGroupUser">
+        <select [(ngModel)]="inviteGroupRole" name="inviteGroupRole" required>
+          <option value="" selected>As?</option>
+          <ng-container *ngFor="let group of groups">
+            <ng-container *ngIf="group.name == inviteGroupName">
+              <ng-container *ngFor="let u of users">
+                <ng-container *ngIf="inviteGroupUser == u.username">
+                  <option value="admin" *ngIf="user.role == 'super' && !group.admin && u.role == 'admin'">
+                    Admininstrator
+                  </option>
+                  <option value="assis" *ngIf="u.role == 'assis' || u.role == 'admin'">
+                    Assistant
+                  </option>
+                  <option value="user">
+                    User
+                  </option>
+                </ng-container>
+              </ng-container>
+            </ng-container>
+          </ng-container>
+        </select>
+      </ng-container>
       <input class="button" type="button" value="Invite {{inviteGroupUser}}" (click)="inviteGroup()">
     </form>
     <div *ngIf="iGroupError">
@@ -285,7 +307,7 @@
               <ng-container *ngIf="group.name == revokeGroupName">
                 <ng-container *ngFor="let u of users">
                   <option
-                    *ngIf="u.username == group.admin && group.users.includes(u.username) && group.assis.includes(u.username) && u.role != 'super'">
+                    *ngIf="u.username == group.admin || group.users.includes(u.username) || group.assis.includes(u.username) && u.role != 'super'">
                     {{u.username}}
                   </option>
                 </ng-container>
@@ -375,6 +397,63 @@
     </div>
   </div>
 
+  <div *ngIf="user.role == 'super' || user.role == 'admin' || user.role == 'assis'">
+    <h3> Remove User from Channel </h3>
+    <form>
+      <ng-container *ngIf="user.role == 'super'">
+        <select [(ngModel)]="revokeChanGroupName" name="revokeChanGroupName" required>
+          <option value="" selected>Select Group</option>
+          <option *ngFor="let group of groups">
+            {{group.name}}
+          </option>
+        </select>
+      </ng-container>
+      <ng-container *ngIf="user.role == 'admin' || user.role == 'assis'">
+        <select [(ngModel)]="revokeChanGroupName" name="revokeChanGroupName" required>
+          <option value="" selected>Select Group</option>
+          <ng-container *ngFor="let group of groups">
+            <option *ngIf="username == group.admin || group.assis.includes(username)">
+              {{group.name}}
+            </option>
+          </ng-container>
+        </select>
+      </ng-container>
+      <ng-container *ngIf="revokeChanGroupName">
+        <select [(ngModel)]="revokeChanName" name="revokeChanName" required>
+          <option value="" selected>Select Channel</option>
+          <ng-container *ngFor="let group of groups">
+            <ng-container *ngIf="group.name == revokeChanGroupName">
+              <option *ngFor="let channel of group.channels">
+                {{channel.name}}
+              </option>
+            </ng-container>
+          </ng-container>
+        </select>
+      </ng-container>
+      <ng-container *ngIf="revokeChanName">
+        <select [(ngModel)]="revokeChanUser" name="revokeChanUser" required>
+          <option value="" selected>Select User</option>
+          <ng-container *ngFor="let group of groups">
+            <ng-container *ngIf="group.name == revokeChanGroupName">
+              <ng-container *ngFor="let channel of group.channels">
+                <ng-container *ngIf="channel.name == revokeChanName">
+                  <ng-container *ngFor="let u of users">
+                    <option *ngIf="channel.access.includes(u.username) && u.role != 'super'">
+                      {{u.username}}
+                    </option>
+                  </ng-container>
+                </ng-container>
+              </ng-container>
+            </ng-container>
+          </ng-container>
+        </select>
+      </ng-container>
+      <input class="button" type="button" value="Revoke {{revokeChanUser}}" (click)="revokeChannel()">
+    </form>
+    <div *ngIf="rChanError">
+      <h4>{{rChanError}}</h4>
+    </div>
+  </div>
 
 
 

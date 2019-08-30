@@ -1,20 +1,29 @@
 const fs = require("fs");
 
+function remove(arr, user){
+    userExist = false;
+    for(let i = 0; i < arr.length; i++){
+        if(arr[i] == user){
+            arr.splice(i, 1);
+            userExist = true;
+        }
+    }
+    console.log(userExist);
+}
+
 module.exports = function (app, path) {
-    app.post("/inviteGroup", function (req, res) {
+    app.post("/revokeGroup", function (req, res) {
         if (!req.body) {
             return res.sendstatus(400);
         }
 
         let group = req.body.groupName;
         let user = req.body.username;
-        let role = req.body.role;
         let groups = [];
 
-        console.log(role);
-        console.log(group);
         console.log(user);
-        console.log("Made it to Invite Groups.. Oceans to the East, Mountain to the West..");
+
+        console.log("Made it to Revoke Groups.. Howdy Stranger, Welcome..");
         fs.readFile("./data.json", "utf-8", function (err, data) {
             if (err) {
                 throw err;
@@ -22,14 +31,14 @@ module.exports = function (app, path) {
             let allData = JSON.parse(data);
             for (let i = 0; i < allData.groups.length; i++) {
                 if (allData.groups[i].name == group) {
-                    if(role == 'user'){
-                        allData.groups[i].users.push(user);
+                    remove(allData.groups[i].users, user);
+                    remove(allData.groups[i].assis, user);
+                    if(allData.groups[i].admin == user){
+                        allData.groups[i].admin = "";
+                        console.log("Oath Cunt");
                     }
-                    if(role == 'assis'){
-                        allData.groups[i].assis.push(assis);
-                    }
-                    if(role == 'admin'){
-                        allData.groups[i].admin = user;
+                    for(let j = 0; j < allData.groups[i].channels.length; j++){
+                        remove(allData.groups[i].channels[j].access, user);
                     }
                 }
             }

@@ -52,19 +52,31 @@ export class DashComponent implements OnInit {
 
   // Destroy Channel Variables
   killChanGroup = ""
-  killChan = ""
+  killChan = "";
   cKillError = "";
 
   // Invite to Group Variables
   inviteGroupName = "";
-  inviteGroupUser = ""
+  inviteGroupUser = "";
+  inviteGroupRole = "";
   iGroupError = "";
+
+  // Revoke from Group Variables
+  revokeGroupName = "";
+  revokeGroupUser = "";
+  rGroupError = "";
 
   // Invite to Channel Variables
   inviteChanGroupName = "";
   inviteChanName = "";
   inviteChanUser = "";
   iChanError = "";
+
+  // Revoke from Channel Variables
+  revokeChanGroupName = "";
+  revokeChanName = "";
+  revokeChanUser = "";
+  rChanError = "";
 
   // Error variables for display
   error = "";
@@ -224,8 +236,13 @@ export class DashComponent implements OnInit {
     if (this.inviteGroupName && this.inviteGroupUser) {
       let invObj = {
         "groupName": this.inviteGroupName,
-        "username": this.inviteGroupUser
+        "username": this.inviteGroupUser,
+        "role": this.inviteGroupRole
       };
+
+      if (!this.inviteGroupRole) {
+        invObj.role = "user";
+      }
 
       this.http.post<any>(BACKEND_URL + "/inviteGroup", invObj).subscribe((data) => {
         console.log(data);
@@ -233,6 +250,7 @@ export class DashComponent implements OnInit {
         this.trimGroups();
         this.inviteGroupName = "";
         this.inviteGroupUser = "";
+        this.inviteGroupRole = "";
         this.iGroupError = "";
       });
     } else {
@@ -241,27 +259,28 @@ export class DashComponent implements OnInit {
   }
 
   revokeGroup() {
-    if (this.inviteGroupName && this.inviteGroupUser) {
+    if (this.revokeGroupName && this.revokeGroupUser) {
       let invObj = {
-        "groupName": this.inviteGroupName,
-        "username": this.inviteGroupUser
+        "groupName": this.revokeGroupName,
+        "username": this.revokeGroupUser,
+        "role": this.inviteGroupRole
       };
 
-      this.http.post<any>(BACKEND_URL + "/inviteGroup", invObj).subscribe((data) => {
+      this.http.post<any>(BACKEND_URL + "/revokeGroup", invObj).subscribe((data) => {
         console.log(data);
         this.groups = data;
         this.trimGroups();
-        this.inviteGroupName = "";
-        this.inviteGroupUser = "";
-        this.iGroupError = "";
+        this.revokeGroupName = "";
+        this.revokeGroupUser = "";
+        this.rGroupError = "";
       });
     } else {
-      this.iGroupError = "...Just pick a dude mate";
+      this.rGroupError = "...Just pick a dude mate";
     }
   }
 
-  inviteChannel(){
-    if (this.inviteChanGroupName && this.inviteChanName) {
+  inviteChannel() {
+    if (this.inviteChanGroupName && this.inviteChanName && this.inviteChanUser) {
       let invObj = {
         "groupName": this.inviteChanGroupName,
         "channelName": this.inviteChanName,
@@ -279,6 +298,28 @@ export class DashComponent implements OnInit {
       });
     } else {
       this.iChanError = "...Just pick a dude mate";
+    }
+  }
+
+  revokeChannel() {
+    if (this.revokeChanGroupName && this.revokeChanName && this.revokeChanUser) {
+      let invObj = {
+        "groupName": this.revokeChanGroupName,
+        "channelName": this.revokeChanName,
+        "username": this.revokeChanUser
+      };
+
+      this.http.post<any>(BACKEND_URL + "/revokeChannel", invObj).subscribe((data) => {
+        console.log(data);
+        this.groups = data;
+        this.trimGroups();
+        this.revokeChanGroupName = "";
+        this.revokeChanName = "";
+        this.revokeChanUser = "";
+        this.rChanError = "";
+      });
+    } else {
+      this.rChanError = "...Just pick a dude mate";
     }
   }
 
