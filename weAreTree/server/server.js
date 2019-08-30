@@ -22,3 +22,5 @@ require("./routes/destroyGroup.js")(app, path);
 require("./routes/fetchGroups.js")(app, path);
 require("./routes/newChannel.js")(app, path);
 require("./routes/destroyChannel.js")(app, path);
+require("./routes/inviteGroup.js")(app, path);
+require("./routes/inviteChannel.js")(app, path);

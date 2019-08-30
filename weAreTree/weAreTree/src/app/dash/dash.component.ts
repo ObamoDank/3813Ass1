@@ -41,7 +41,6 @@ export class DashComponent implements OnInit {
   newAdmin = "";
   gCreateError = "";
 
-
   // Destroy Group Variables
   killGroup = "";
   gKillError = "";
@@ -55,6 +54,17 @@ export class DashComponent implements OnInit {
   killChanGroup = ""
   killChan = ""
   cKillError = "";
+
+  // Invite to Group Variables
+  inviteGroupName = "";
+  inviteGroupUser = ""
+  iGroupError = "";
+
+  // Invite to Channel Variables
+  inviteChanGroupName = "";
+  inviteChanName = "";
+  inviteChanUser = "";
+  iChanError = "";
 
   // Error variables for display
   error = "";
@@ -207,6 +217,68 @@ export class DashComponent implements OnInit {
       });
     } else {
       this.cKillError = "...Just pick a room mate";
+    }
+  }
+
+  inviteGroup() {
+    if (this.inviteGroupName && this.inviteGroupUser) {
+      let invObj = {
+        "groupName": this.inviteGroupName,
+        "username": this.inviteGroupUser
+      };
+
+      this.http.post<any>(BACKEND_URL + "/inviteGroup", invObj).subscribe((data) => {
+        console.log(data);
+        this.groups = data;
+        this.trimGroups();
+        this.inviteGroupName = "";
+        this.inviteGroupUser = "";
+        this.iGroupError = "";
+      });
+    } else {
+      this.iGroupError = "...Just pick a dude mate";
+    }
+  }
+
+  revokeGroup() {
+    if (this.inviteGroupName && this.inviteGroupUser) {
+      let invObj = {
+        "groupName": this.inviteGroupName,
+        "username": this.inviteGroupUser
+      };
+
+      this.http.post<any>(BACKEND_URL + "/inviteGroup", invObj).subscribe((data) => {
+        console.log(data);
+        this.groups = data;
+        this.trimGroups();
+        this.inviteGroupName = "";
+        this.inviteGroupUser = "";
+        this.iGroupError = "";
+      });
+    } else {
+      this.iGroupError = "...Just pick a dude mate";
+    }
+  }
+
+  inviteChannel(){
+    if (this.inviteChanGroupName && this.inviteChanName) {
+      let invObj = {
+        "groupName": this.inviteChanGroupName,
+        "channelName": this.inviteChanName,
+        "username": this.inviteChanUser
+      };
+
+      this.http.post<any>(BACKEND_URL + "/inviteChannel", invObj).subscribe((data) => {
+        console.log(data);
+        this.groups = data;
+        this.trimGroups();
+        this.inviteChanGroupName = "";
+        this.inviteChanName = "";
+        this.inviteChanUser = "";
+        this.iChanError = "";
+      });
+    } else {
+      this.iChanError = "...Just pick a dude mate";
     }
   }
 

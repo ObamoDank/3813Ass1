@@ -1,0 +1,34 @@
+const fs = require("fs");
+
+module.exports = function (app, path) {
+    app.post("/inviteGroup", function (req, res) {
+        if (!req.body) {
+            return res.sendstatus(400);
+        }
+
+        let group = req.body.groupName;
+        let user = req.body.username;
+        let groups = [];
+
+        console.log("Made it to Invite Groups.. Oceans to the East, Mountain to the West..");
+        fs.readFile("./data.json", "utf-8", function (err, data) {
+            if (err) {
+                throw err;
+            }
+            let allData = JSON.parse(data);
+            for (let i = 0; i < allData.groups.length; i++) {
+                if (allData.groups[i].name == group) {
+                    allData.groups[i].users.push(user)
+                }
+            }
+            let allDataJson = JSON.stringify(allData);
+            groups = allData.groups;
+            fs.writeFile("./data.json", allDataJson, "utf-8", function (err) {
+                if (err) {
+                    throw err;
+                }
+            });
+            res.send(groups);
+        });
+    });
+}
