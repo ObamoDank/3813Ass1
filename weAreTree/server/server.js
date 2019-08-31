@@ -26,3 +26,5 @@ require("./routes/inviteGroup.js")(app, path);
 require("./routes/revokeGroup.js")(app, path);
 require("./routes/inviteChannel.js")(app, path);
 require("./routes/revokeChannel.js")(app, path);
+require("./routes/newAssis.js")(app, path);
+require("./routes/newAdmin.js")(app, path);

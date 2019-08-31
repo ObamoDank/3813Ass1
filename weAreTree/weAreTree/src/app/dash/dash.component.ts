@@ -16,58 +16,93 @@ export class DashComponent implements OnInit {
   username;
   userRole = "";
   user = [];
-  isInRoom = false;
   isRoomAdmin = false;
   isRoomAssis = false;
+
+  // User Location
+  isInGroup = false;
+  isInChannel = false;
+  currentGroup = "";
+  currentChannel = "";
+
+  // Join Channels & Groups
+  goToGroup = "";
+  goToChannel = "";
+  goGroupError = "";
+  goChannelError = "";
+  
 
   // Data
   users = [];
   groups = [];
+
+  // Room Data
+  groupData = [];
+  channel = [];
 
   // Create User Variables
   newUser = "";
   newEmail = "";
   newRole = "";
   createError = "";
+  
 
   // Delete User Variable
   killUser = "";
   killError = ""
+  
 
   // Promote User Variable
   boostUser = "";
   boostRole = "";
   promoteError = "";
+  
+
+  // Add Assistant Variables
+  newAssisName = "";
+  nAssisError = "";
+  
+
+  // Add Admin Variables
+  newAdminName = "";
+  nAdminError = "";
+  
 
   // Create Group Variables
   newGroup = "";
   newAdmin = "";
   gCreateError = "";
+  
 
   // Destroy Group Variables
   killGroup = "";
   gKillError = "";
-
-  // Create Channel Variables
-  newChanGroup = "";
-  newChan = "";
-  cCreateError = "";
-
-  // Destroy Channel Variables
-  killChanGroup = ""
-  killChan = "";
-  cKillError = "";
+  
 
   // Invite to Group Variables
   inviteGroupName = "";
   inviteGroupUser = "";
   inviteGroupRole = "";
   iGroupError = "";
+  
 
   // Revoke from Group Variables
   revokeGroupName = "";
   revokeGroupUser = "";
   rGroupError = "";
+  
+
+  // Create Channel Variables
+  newChanGroup = "";
+  newChan = "";
+  cCreateError = "";
+  
+
+  // Destroy Channel Variables
+  killChanGroup = ""
+  killChan = "";
+  cKillError = "";
+  
 
   // Invite to Channel Variables
   inviteChanGroupName = "";
@@ -84,9 +119,10 @@ export class DashComponent implements OnInit {
   // Error variables for display
   error = "";
 
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient, private router: Router) { }
 
   createUser() {
+    this.resetErrors();
     if (this.newUser && this.newEmail && this.newRole) {
       let userObj = {
         "newUser": this.newUser,
@@ -104,10 +140,7 @@ export class DashComponent implements OnInit {
           console.log(data);
           this.error = data;
         }
-        this.createError = "";
-        this.newUser = "";
-        this.newEmail = "";
-        this.newRole = "";
+        this.resetValues();
       });
     } else {
       this.createError = "...Just fill in the options " + this.username;
@@ -115,6 +148,7 @@ export class DashComponent implements OnInit {
   }
 
   destroyUser() {
+    this.resetErrors();
     if (this.killUser) {
       let userObj = { "username": this.killUser };
 
@@ -122,8 +156,7 @@ export class DashComponent implements OnInit {
         console.log(data)
         this.users = data;
         this.trimUsers();
-        this.killError = ""
-        this.killUser = ""
+        this.resetValues();
       });
     } else {
       this.killError = "...Just pick an option"
@@ -131,6 +164,7 @@ export class DashComponent implements OnInit {
   }
 
   promoteUser() {
+    this.resetErrors();
     if (this.boostUser && this.boostRole) {
       let userObj = {
         "username": this.boostUser,
@@ -142,9 +176,7 @@ export class DashComponent implements OnInit {
         this.users = data.users;
         this.groups = data.groups;
         this.trimUsers();
-        this.promoteError = "";
-        this.boostUser = "";
-        this.boostRole = "";
+        this.resetValues();
       });
     } else {
       this.promoteError = "...Just pick an option"
@@ -152,6 +184,7 @@ export class DashComponent implements OnInit {
   }
 
   createGroup() {
+    this.resetErrors();
     if (this.newGroup) {
       let groupObj = {
         "groupName": this.newGroup,
@@ -164,9 +197,7 @@ export class DashComponent implements OnInit {
         if (data != "Oy group Exists ay Brah") {
           this.groups = data;
           this.trimGroups();
-          this.newGroup = "";
-          this.newAdmin = "";
-          this.gCreateError = "";
+          this.resetValues();
         } else {
           this.error = data;
         }
@@ -177,6 +208,7 @@ export class DashComponent implements OnInit {
   }
 
   destroyGroup() {
+    this.resetErrors();
     if (this.killGroup) {
       let groupObj = { "name": this.killGroup };
 
@@ -184,8 +216,7 @@ export class DashComponent implements OnInit {
         console.log(data);
         this.groups = data;
         this.trimGroups();
-        this.killGroup = "";
-        this.gKillError = "";
+        this.resetValues();
       });
     } else {
       this.gKillError = "...Just pick a room mate";
@@ -193,6 +224,7 @@ export class DashComponent implements OnInit {
   }
 
   createChannel() {
+    this.resetErrors();
     if (this.newChanGroup && this.newChan) {
       let chanObj = {
         "channelGroup": this.newChanGroup,
@@ -204,9 +236,7 @@ export class DashComponent implements OnInit {
         if (data != "Oy channel Exists ay Brah") {
           this.groups = data;
           this.trimGroups();
-          this.newChanGroup = "";
-          this.newChan = "";
-          this.cCreateError = "";
+          this.resetValues();
         } else {
           this.error = data;
         }
@@ -217,6 +247,7 @@ export class DashComponent implements OnInit {
   }
 
   destroyChannel() {
+    this.resetErrors();
     if (this.killChanGroup && this.killChan) {
       let chanObj = {
         "channelGroup": this.killChanGroup,
@@ -227,9 +258,7 @@ export class DashComponent implements OnInit {
         console.log(data);
         this.groups = data;
         this.trimGroups();
-        this.killChan = "";
-        this.killChanGroup = "";
-        this.cKillError = "";
+        this.resetValues();
       });
     } else {
       this.cKillError = "...Just pick a room mate";
@@ -237,6 +266,7 @@ export class DashComponent implements OnInit {
   }
 
   inviteGroup() {
+    this.resetErrors();
     if (this.inviteGroupName && this.inviteGroupUser) {
       let invObj = {
         "groupName": this.inviteGroupName,
@@ -252,10 +282,7 @@ export class DashComponent implements OnInit {
         console.log(data);
         this.groups = data;
         this.trimGroups();
-        this.inviteGroupName = "";
-        this.inviteGroupUser = "";
-        this.inviteGroupRole = "";
-        this.iGroupError = "";
+        this.resetValues();
       });
     } else {
       this.iGroupError = "...Just pick a dude mate";
@@ -263,6 +290,7 @@ export class DashComponent implements OnInit {
   }
 
   revokeGroup() {
+    this.resetErrors();
     if (this.revokeGroupName && this.revokeGroupUser) {
       let invObj = {
         "groupName": this.revokeGroupName,
@@ -274,9 +302,7 @@ export class DashComponent implements OnInit {
         console.log(data);
         this.groups = data;
         this.trimGroups();
-        this.revokeGroupName = "";
-        this.revokeGroupUser = "";
-        this.rGroupError = "";
+        this.resetValues();
       });
     } else {
       this.rGroupError = "...Just pick a dude mate";
@@ -284,6 +310,7 @@ export class DashComponent implements OnInit {
   }
 
   inviteChannel() {
+    this.resetErrors();
     if (this.inviteChanGroupName && this.inviteChanName && this.inviteChanUser) {
       let invObj = {
         "groupName": this.inviteChanGroupName,
@@ -295,10 +322,7 @@ export class DashComponent implements OnInit {
         console.log(data);
         this.groups = data;
         this.trimGroups();
-        this.inviteChanGroupName = "";
-        this.inviteChanName = "";
-        this.inviteChanUser = "";
-        this.iChanError = "";
+        this.resetValues();
       });
     } else {
       this.iChanError = "...Just pick a dude mate";
@@ -306,6 +330,7 @@ export class DashComponent implements OnInit {
   }
 
   revokeChannel() {
+    this.resetErrors();
     if (this.revokeChanGroupName && this.revokeChanName && this.revokeChanUser) {
       let invObj = {
         "groupName": this.revokeChanGroupName,
@@ -317,14 +342,127 @@ export class DashComponent implements OnInit {
         console.log(data);
         this.groups = data;
         this.trimGroups();
-        this.revokeChanGroupName = "";
-        this.revokeChanName = "";
-        this.revokeChanUser = "";
-        this.rChanError = "";
+        this.resetValues();
       });
     } else {
       this.rChanError = "...Just pick a dude mate";
     }
+  }
+
+  newAdminG() {
+    this.resetErrors();
+    if (this.newAdminName) {
+      let adObj = {
+        "username": this.newAdminName,
+        "group": this.currentGroup
+      }
+
+      this.http.post<any>(BACKEND_URL + "/newAdmin", adObj).subscribe((data) => {
+        console.log(data);
+        this.groups = data;
+        this.trimGroups();
+        for (let i = 0; i < this.groups.length; i++) {
+          if (this.currentGroup == this.groups[i].name) {
+            this.groupData = this.groups[i];
+          }
+        }
+      });
+      this.resetValues();
+    } else {
+      this.nAdminError = "Pick a dude bruv";
+    }
+  }
+
+  newAssis() {
+    this.resetErrors();
+    if (this.newAssisName) {
+      let assObj = {
+        "username": this.newAssisName,
+        "group": this.currentGroup
+      }
+
+      this.http.post<any>(BACKEND_URL + "/newAssis", assObj).subscribe((data) => {
+        console.log(data);
+        this.groups = data.groups;
+        this.trimGroups();
+        this.users = data.users;
+        for (let i = 0; i < this.groups.length; i++) {
+          if (this.currentGroup == this.groups[i].name) {
+            this.groupData = this.groups[i];
+          }
+        }
+      });
+      this.resetValues();
+    } else {
+      this.nAssisError = "Pick a dude bruv";
+    }
+  }
+
+  joinGroup() {
+    this.resetErrors();
+    if (this.goToGroup) {
+      this.isInGroup = true;
+      this.currentGroup = this.goToGroup;
+      this.isRoomAdmin = false;
+      this.isRoomAssis = false;
+      this.goToGroup = "";
+      for (let i = 0; i < this.groups.length; i++) {
+        if (this.currentGroup == this.groups[i].name) {
+          this.groupData = this.groups[i];
+          console.log(this.groupData);
+          if (this.groups[i].admin == this.username) {
+            this.isRoomAdmin = true;
+          }
+          if (this.groups[i].assis.includes(this.username)) {
+            this.isRoomAssis = true;
+          }
+        }
+      }
+      this.isInChannel = false;
+      this.IAmSuper();
+      console.log(this.groupData)
+    } else {
+      this.goGroupError = "Pick a Group Mate.."
+    }
+  }
+
+  joinChannel() {
+    this.resetErrors();
+    if (this.goToChannel) {
+      if (!this.isInGroup || this.currentGroup != this.goToGroup) {
+        this.joinGroup();
+      }
+      this.isInChannel = true;
+      this.currentChannel = this.goToChannel;
+      this.resetValues();
+    } else {
+      this.goChannelError = "Pick a Channel Mate.."
+    }
+  }
+
+  leaveGroup() {
+    this.resetErrors();
+    if (this.isInChannel) {
+      this.leaveChannel();
+    }
+    this.isInGroup = false;
+    this.currentGroup = "";
+    if (this.isRoomAdmin || this.isRoomAssis) {
+      this.isRoomAdmin = false;
+      this.isRoomAssis = false;
+      this.resetValues();
+    }
+  }
+
+  leaveChannel() {
+    this.isInChannel = false;
+    this.currentChannel = "";
+    this.resetValues();
+  }
+
+  logout() {
+    localStorage.clear()
+    this.router.navigateByUrl("/");
   }
 
   fetchUser() {
@@ -380,7 +518,6 @@ export class DashComponent implements OnInit {
 
   trimGroups() {
     if (this.userRole != 'super') {
-      console.log(this.userRole);
       for (let i = this.groups.length - 1; i >= 0; i--) {
         if (this.groups[i].admin != this.username && !this.groups[i].assis.includes(this.username) && !this.groups[i].users.includes(this.username)) {
           this.groups.splice(i, 1);
@@ -398,5 +535,61 @@ export class DashComponent implements OnInit {
       }
       console.log(this.groups);
     }
+  }
+
+  IAmSuper() {
+    if (this.userRole == 'super') {
+      this.isRoomAdmin = true;
+      this.isRoomAssis = true;
+    }
+  }
+
+  resetErrors() {
+    this.goGroupError = "";
+    this.goChannelError = "";
+    this.error = "";
+    this.rChanError = "";
+    this.iChanError = "";
+    this.cKillError = "";
+    this.cCreateError = "";
+    this.rGroupError = "";
+    this.iGroupError = "";
+    this.gKillError = "";
+    this.gCreateError = "";
+    this.nAssisError = "";
+    this.promoteError = "";
+    this.killError = ""
+    this.createError = "";
+    this.nAssisError = "";
+    this.nAdminError = "";
+  }
+
+  resetValues(){
+    this.goToGroup = "";
+    this.goToChannel = "";
+    this.newUser = "";
+    this.newEmail = "";
+    this.newRole = "";
+    this.killUser = "";
+    this.boostUser = "";
+    this.boostRole = "";
+    this.newAssisName = "";
+    this.newAdminName = "";
+    this.newGroup = "";
+    this.newAdmin = "";
+    this.killGroup = "";
+    this.inviteGroupName = "";
+    this.inviteGroupUser = "";
+    this.inviteGroupRole = "";
+    this.revokeGroupName = "";
+    this.revokeGroupUser = "";
+    this.newChanGroup = "";
+    this.newChan = "";
+    this.killChanGroup = ""
+    this.killChan = "";
+    this.inviteChanGroupName = "";
+    this.inviteChanName = "";
+    this.inviteChanUser = "";
+    this.resetErrors();
   }
 }

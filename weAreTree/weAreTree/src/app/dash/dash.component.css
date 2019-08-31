@@ -1,3 +1,11 @@
+body{
+    text-align: center;
+}
+
+form{
+    display: inline-block;
+}
+
 .dashboard {
     display: flex;
     justify-content: space-around;
@@ -29,6 +37,43 @@
     background-color: rgb(20, 20, 20);
     padding: 5%;
     max-width: 30rem;
+    border-color: #420d09; 
+    border-width:5px; 
+    border-style:double; 
+    border-radius: 20px;
+}
+
+.chat {
+    width: 100%;
+    display: inline-block;
+    background-color: rgb(20, 20, 20);
+    padding: 5%;
+    max-width: 60rem;
+    border-color: #420d09; 
+    border-width:5px; 
+    border-style:double; 
+    border-radius: 20px;
+    opacity: 0.7;
+}
+
+.inGroup {
+    width: 90%;
+    display: inline-block;
+    background-color: rgb(20, 20, 20);
+    padding: 5%;
+    max-width: 45rem;
+    border-color: #420d09; 
+    border-width:5px; 
+    border-style:double; 
+    border-radius: 20px;
+}
+
+.inChannel {
+    width: 90%;
+    display: inline-block;
+    background-color: rgb(20, 20, 20);
+    padding: 5%;
+    max-width: 45rem;
     border-color: #420d09; 
     border-width:5px; 
     border-style:double; 
