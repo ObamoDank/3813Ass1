@@ -1,15 +1,19 @@
 const fs = require("fs");
 
-function remove(arr, user){
+// Function removes specified user from specified array
+
+function remove(arr, user) {
     userExist = false;
-    for(let i = 0; i < arr.length; i++){
-        if(arr[i] == user){
+    for (let i = 0; i < arr.length; i++) {
+        if (arr[i] == user) {
             arr.splice(i, 1);
             userExist = true;
         }
     }
     console.log(userExist);
 }
+
+// Function removes specified user from specified group
 
 module.exports = function (app, path) {
     app.post("/revokeGroup", function (req, res) {
@@ -31,11 +35,11 @@ module.exports = function (app, path) {
                 if (allData.groups[i].name == group) {
                     remove(allData.groups[i].users, user);
                     remove(allData.groups[i].assis, user);
-                    if(allData.groups[i].admin == user){
+                    if (allData.groups[i].admin == user) {
                         allData.groups[i].admin = "";
                         console.log("Oath Cunt");
                     }
-                    for(let j = 0; j < allData.groups[i].channels.length; j++){
+                    for (let j = 0; j < allData.groups[i].channels.length; j++) {
                         remove(allData.groups[i].channels[j].access, user);
                     }
                 }

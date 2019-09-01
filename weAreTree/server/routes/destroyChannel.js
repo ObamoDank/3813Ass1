@@ -1,5 +1,7 @@
 const fs = require("fs");
 
+// Module accesses database and removes specified channel
+
 module.exports = function (app, path) {
     app.post("/destroyChannel", function (req, res) {
         if (!req.body) {
@@ -19,7 +21,7 @@ module.exports = function (app, path) {
             for (let i = 0; i < allData.groups.length; i++) {
                 if (allData.groups[i].name == group) {
                     for (let j = 0; j < allData.groups[i].channels.length; j++) {
-                        if (allData.groups[i].channels[j].name == channel){
+                        if (allData.groups[i].channels[j].name == channel) {
                             allData.groups[i].channels.splice([j], 1);
                         }
                     }

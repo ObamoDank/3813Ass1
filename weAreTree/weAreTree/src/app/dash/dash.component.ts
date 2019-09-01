@@ -309,6 +309,7 @@ export class DashComponent implements OnInit {
     }
   }
 
+  // Function grants access rights to group from within group
   inviteGroupInGroup() {
     this.resetErrors();
     if (this.currentGroup && this.inviteGroupUserName) {
@@ -377,6 +378,7 @@ export class DashComponent implements OnInit {
     }
   }
 
+  // Function adds new user to channel from within that channel
   inviteChannelInChannel() {
     this.resetErrors();
     if (this.currentChannel && this.currentGroup && this.inviteChannelUserName) {

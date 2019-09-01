@@ -5,7 +5,7 @@ app.use(cors());
 const bodyparser = require("body-parser");
 const path = require("path");
 
-app.use(bodyparser.urlencoded({extended: true}));
+app.use(bodyparser.urlencoded({ extended: true }));
 app.use(bodyparser.json());
 app.use(express.static(path.join(__dirname + '../weAreTree/dist/weAreTree')));
 

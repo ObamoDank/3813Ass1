@@ -18,6 +18,8 @@ export class LoginComponent implements OnInit {
 
   constructor(private router: Router, private http: HttpClient) {}
 
+
+  // Function provides user access to dashboard component
   login(){
     let userObj = {username: this.username};
 

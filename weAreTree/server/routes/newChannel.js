@@ -1,5 +1,8 @@
 const fs = require("fs");
 
+// Module adds specified channel to specified group. First checks to see if channel
+// already exists.
+
 module.exports = function (app, path) {
     app.post("/newChannel", function (req, res) {
         if (!req.body) {
@@ -30,7 +33,7 @@ module.exports = function (app, path) {
                     if (!channelExists) {
                         allData.groups[i].channels.push(newChannel);
                     } else {
-                        return res.send({error: "Oy Channel Exists ay Brah"});
+                        return res.send({ error: "Oy Channel Exists ay Brah" });
                     }
                 }
             }

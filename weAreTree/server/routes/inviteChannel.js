@@ -1,5 +1,7 @@
 const fs = require("fs");
 
+// Module adds specified user to specified channel within specified group.
+
 module.exports = function (app, path) {
     app.post("/inviteChannel", function (req, res) {
         if (!req.body) {

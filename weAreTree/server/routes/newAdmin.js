@@ -1,5 +1,7 @@
 const fs = require("fs");
 
+// Function removes specified value from specified array
+
 function remove(arr, user) {
     userExist = false;
     for (let i = 0; i < arr.length; i++) {
@@ -9,6 +11,9 @@ function remove(arr, user) {
         }
     }
 }
+
+// Module adds Admin to group. If user is already in group, user is removed from all arrays within
+// group as admin needs only be displayed once.
 
 module.exports = function (app, path) {
     app.post("/newAdmin", function (req, res) {

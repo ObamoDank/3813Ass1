@@ -1,5 +1,7 @@
 const fs = require("fs");
 
+// Module adds specified user to specified group
+
 module.exports = function (app, path) {
     app.post("/inviteGroup", function (req, res) {
         if (!req.body) {
@@ -19,13 +21,13 @@ module.exports = function (app, path) {
             let allData = JSON.parse(data);
             for (let i = 0; i < allData.groups.length; i++) {
                 if (allData.groups[i].name == group) {
-                    if(role == 'user'){
+                    if (role == 'user') {
                         allData.groups[i].users.push(user);
                     }
-                    if(role == 'assis'){
+                    if (role == 'assis') {
                         allData.groups[i].assis.push(user);
                     }
-                    if(role == 'admin'){
+                    if (role == 'admin') {
                         allData.groups[i].admin = user;
                     }
                 }
