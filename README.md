@@ -27,13 +27,13 @@ My server side data structure is stored in a JSON file. There are two entities w
 -	Admin – String (User)
 -	Assis – Array (Array of Users)
 -	Users – Array (Array of Users)
-	__Channels__ – Array (Array of Channel Objects
+-	__Channels__ – Array (Array of Channel Objects
 	-Access – Array (Array of Users)
 	- Name – String
 	
 My User array stores the required information about the users including their roles.
 
-My Groups Array stores information about the members in each group along with their role in that particular group. It also contains an array which stores all of the channels within that group. These channels each contain an array documenting the users who have access to that array.
+My Groups Array stores information about the members in each group along with their role in that particular group. It also contains an array which stores all of the channels within that group. These channels each contain an array documenting the users who have access to that channel.
 
 Users are represented in the user array.
 
@@ -70,7 +70,7 @@ The rest of the variables on the angular side are for inputs made by the user al
 
 This project could have been divided into many components based on the required functionality, however, only two components were utilized. These components are __Login__ and __Dash__.
 
-__Login__ Component simple takes a username as an input and grants access to the website upon verification.
+__Login__ Component simply takes a username as an input and grants access to the website upon verification.
 
 __Dash__ Component contains all of the functionality for the chat system. This includes all of the post requests to the server and all of the data needed to run the system. Since the whole chat system is run from a single component, it is quite heavy. 
 
@@ -107,7 +107,7 @@ My Node server has a total of 18 modules, each corresponding to a given route. T
 - __Check User__: This module is used to check the user credentials in order to authenticate their login. The route checks a username against the database and if the username exists, the user is granted access.
 - __Fetch User__: This module takes a username parameter and returns the user object which is stored in the database.
 - __Fetch Role__: This module takes a username parameter and returns that users role.
-- __Fetch Users__: This Module returns all dats about users.
+- __Fetch Users__: This Module returns all data about users.
 - __Fetch Groups__: This module returns all data about groups.
 - __New Channel__: This route takes a group name and a channel name and creates a new channel within the specified group. It also checks to see if the channel name already exists within the group and returns the updated data about groups.
 - __New Group__: Module takes a group name as input along with an optional input of group admin. The route creates a new group object with empty arrays for Assis, Users and Channels, if an admin is specified, the group is created with that admin receiving privilege over it. Returns the updated list of groups.
@@ -115,8 +115,8 @@ My Node server has a total of 18 modules, each corresponding to a given route. T
 - __New Admin__: Module takes a user as input and adds that user as an admin to a group – assuming that user has admin privileges. Returns updated list of groups.
 - __New Assis__: Module takes a user as input and adds that user as an Assis to the specified channel. If user is not an Assis, they are promoted to Assis as well as being added. Returns updated list of groups and updated user list.
 - __Destroy Group__: Module takes a group name as input and removes that group from the database. Returns updated list of groups.
-- __Destroy User__: Module takes a username as input and removes that group from the database. Returns updates list of users.
-- __Destroy Channel__: Module takes a channel name as input and removes that group from the database. Returns updated list of groups.
+- __Destroy User__: Module takes a username as input and removes that user from the database. Returns updates list of users.
+- __Destroy Channel__: Module takes a channel name and a group name as input and removes that channel from the database. Returns updated list of groups.
 - __Promote User__: Module takes a username and role. The User is granted that role. Updated user data is returned.
 - __Invite Channel__: Module takes a username, group and channel as input. Module loops through groups to find the group which contains the specified channel. User is added to this channel. Updated groups list is returned.
 - __Invite Group__: Module takes a username and a group name as input. If user is not already a member of this group (admin, assis or user), user is added to group list. Updated group list is returned.
@@ -131,13 +131,13 @@ Only one function has been created called remove(). This function takes an array
 
 There are a total of 18 files within the Routes folder. These are described above.
 
-Besides this, there is a server.js file which holds the express app along with its dependencies and houses all of the routes. There is a listen.js file which specifies the port which the route runs through. There is also a data.json file which holds all of the data for the application. There is also a package file and a node_module folder which holds all of the dependencies and npm packages for the application. There are no global variables.
+Besides this, there is a server.js file which holds the express app along with its dependencies and houses all of the routes. There is a listen.js file which specifies the port which the route runs through. There is also a data.json file which holds all of the data for the application. There is also a package file and a node_module folder which holds all of the dependencies and npm packages for the application. There are no global variables besides those which enable npm packages such as cors and body parser.
 
 ## REST API and division of labour
 
-The server acts as an API and interfaces with the angular client. The client sends http post requests to the server at port 3000 via http methods. The API interfaces with the JSON file which holds all of the data necessary for the system. Access to the database is via routes. The responsibility of the server side is essentially to take queries from the client side in the form of data. The routes hold functionality which processes the data based on requirements by the client and whole data objects are returned to the client for display and use. The data acts as a model in the standard model, view controller paradigm and the client and server share the role of controller. The server retrieves data from the data file and either returns the data directly to the client or it alters the data and writes it back to the file.
+The server acts as an API and interfaces with the angular client. The client sends http post requests to the server at port 3000 via http methods. The API interfaces with the JSON file which holds all of the data necessary for the system. Access to the database is via routes. The responsibility of the server side is essentially to take queries from the client side in the form of data. The routes hold functionality which processes the data based on requirements by the client and whole data objects are returned to the client for display and use. The data acts as a model in the standard model, view controller paradigm and the client and server share the role of controller. The server retrieves data from the data file and either returns the data directly to the client or it alters the data and writes it back to the file before returning it.
 
-The Client takes input from the view. This input is then packaged appropriately to send to the server for processing. The server processes this data and returns and object – generally being the list of users, groups or in some cases, both. The client holds a trim function for groups and users. The trim users function takes a list of all users and removes the current user from that list. In this way, the current user is not displayed in forms. The current users data is retrieved separately and stored separately for use. The trim groups function takes a list of all groups from the server. It then removes the groups and channels within those groups which the user is not apart of. In this way, the data which is held by the user is only data which is relevant. Eg. A normal user has all groups which they do not have access to trimmed from the list of groups. As data is processed by the client side in this manner, the responsibilities of controller are shared between client and server.
+The Client takes input from the view. This input is then packaged appropriately to send to the server for processing. The server processes this data and returns an object – generally being the list of users, groups or in some cases, both. The client holds a trim function for groups and users. The trim users function takes a list of all users and removes the current user from that list. In this way, the current user is not displayed in forms. The current users data is retrieved separately and stored for use. The trim groups function takes a list of all groups from the server. It then removes the groups and channels within those groups which the user is not apart of. In this way, the data which is held by the user is only data which is relevant. Eg. A normal user has all groups which they do not have access to trimmed from the list of groups. As data is processed by the client side in this manner, the responsibilities of controller are shared between client and server.
 
 Finally, the view which displays all of the data simultaneously act as a view, moderate security and input validation. As users are only able to input predetermined values into most fields, the inputs are very safe. Aside from this, only correct data will be revealed inside of those fields so it will not be possible for users to be granted access to incorrect groups or granted access privileges which were not intended.
 
@@ -147,4 +147,4 @@ The html client is running a mass of angular templating. The most prominent of t
 
 The variables retrieved from the database on the server side are sent to the client side. This replaces the current data in the client and this information is reflected in the view. For example, when a new user is added to a group, the information is sent to the server, stored in the database and the new state of the database is sent back to the client. This is then reflected in the list of users. Furthermore, if that user logs in, they will be able to see that they have access to a new group and they will be able to access that group. Another more prominent example is one in which a user is promoted to a super user. When a normal user logs into the chat, they have simply a list of the groups which they have access to. A super user on the other hand, has access to a whole dashboard full of commands. If the user is promoted to a super user, their view will change to reflect this. They will now have access to the entire dashboard.
 
-Finally, there is a variable called __IsInRoom__ and __IsRoomAdmin__. These variables are simple Boolean expressions. The chat component will only show if the __IsInRoom__ variable is set to true. This represents a state change on the client side. If the user has the __IsInRoom__ variable along with the __IsRoomAdmin__ variables set to true, they will be able to view the chat component along with the accompanying commands which comes with Admin privilege. They same principles apply when entering a channel.
+Finally, there is a variable called __IsInRoom__ and __IsRoomAdmin__. These variables are simple Boolean expressions. The chat component will only show if the __IsInRoom__ variable is set to true. This represents a state change on the client side. If the user has the __IsInRoom__ variable along with the __IsRoomAdmin__ variables set to true, they will be able to view the chat component along with the accompanying commands which comes with Admin privilege. The same principles apply when entering a channel.
