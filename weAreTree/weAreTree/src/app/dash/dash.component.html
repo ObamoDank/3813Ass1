@@ -21,6 +21,9 @@
           </select><br><br>
           <input class="button" type="button" value="Create User" (click)="createUser()" />
         </Form>
+        <div *ngIf="serverErrorUser">
+          <h4>{{serverErrorUser}}</h4>
+        </div>
         <div *ngIf="createError">
           <h4>{{createError}}</h4>
         </div>
@@ -120,8 +123,8 @@
           </ng-container><br><br>
           <input class="button" type="button" value="Create Group" (click)="createGroup()">
         </form>
-        <div *ngIf="error">
-          {{error}}
+        <div *ngIf="serverErrorGroup">
+          <h4>{{serverErrorGroup}}</h4>
         </div>
       </div>
 
@@ -309,6 +312,9 @@
         </form>
         <div *ngIf="cCreateError">
           <h4>{{cCreateError}}</h4>
+        </div>
+        <div *ngIf="serverErrorChannel">
+          <h4>{{serverErrorChannel}}</h4>
         </div>
       </div>
 
@@ -498,60 +504,111 @@
       </select><br><br>
       <input *ngIf="goToGroup" type="button" class="button" value="Go To Channel" (click)="joinChannel()">
     </form>
-  </div>
+  </div><br>
 
   <div class="chat" *ngIf="isInGroup">
-    <h3>Welcome to Chat</h3>
+    <h1>Welcome to Chat</h1>
     <div class="inGroup">
-      <h2>Group: {{currentGroup}}</h2>
-      <ng-container *ngIf="isRoomAdmin">
-        <h2>Add Assistant to Group</h2>
-        <form>
-          <select [(ngModel)]="newAssisName" name="newAssisName">
-            <option class="op1" value="" selected>Select User</option>
-            <ng-container *ngFor="let u of groupData.users">
-              <option>{{u}}</option>
-            </ng-container>
-          </select><br><br>
-          <input type="button" class="button" value="Add {{newAssisName}}" (click)="newAssis()">
-        </form>
-        <div *ngIf="nAssisError">
-          <h4>{{nAssisError}}</h4>
+      <div class="groupSegTop">
+        <div class="groupTopLeft">
+          <ng-container *ngIf="isRoomAssis">
+            <h2>Add User to Group</h2>
+            <form>
+              <select [(ngModel)]="inviteGroupUserName" name="inviteGroupUserName">
+                <option class="op1" value="" selected>Select User</option>
+                <ng-container *ngFor="let group of groups">
+                  <ng-container *ngIf="group.name == currentGroup">
+                    <ng-container *ngFor="let u of users">
+                      <option
+                        *ngIf="u.username != group.admin && !group.users.includes(u.username) && !group.assis.includes(u.username) && u.role != 'super'">
+                        {{u.username}}
+                      </option>
+                    </ng-container>
+                  </ng-container>
+                </ng-container>
+              </select><br><br>
+              <input type="button" class="button" value="Add {{inviteGroupUserName}}" (click)="inviteGroupInGroup()">
+            </form>
+            <div *ngIf="nUserError">
+              <h4>{{nUserError}}</h4>
+            </div>
+          </ng-container>
         </div>
-      </ng-container>
-      <ng-container *ngIf="user.role == 'super' && !groupData.admin">
-        <h2>This Group Has no Admin, Add one?</h2>
-        <form>
-          <select [(ngModel)]="newAdminName" name="newAdminName">
-            <option class="op1" value="" selected>Select Admin</option>
-            <ng-container *ngFor="let u of users">
-              <option *ngIf="u.role == 'admin'">{{u.username}}</option>
-            </ng-container>
-          </select><br><br>
-          <input type="button" class="button" value="Add {{newAdminName}}" (click)="newAdminG()">
-        </form>
-        <div *ngIf="nAdminError">
-          <h4>{{nAdminError}}</h4>
+        <div class="groupTopMid">
+          <h2>Group: {{currentGroup}}</h2>
         </div>
-      </ng-container>
-      <ng-container *ngIf="!groupData.admin">
-        <h2>Currently no Admin</h2>
-      </ng-container>
-      <ng-container *ngIf="groupData.admin">
-        <h2>Room Admin: {{groupData.admin}}</h2>
-      </ng-container>
-      <ng-container>
-        <h3>Channels: </h3>
-        <ng-container style="display: inline" *ngFor="let channel of groupData.channels">
-          <p>{{channel.name}}</p>
-        </ng-container>
-      </ng-container>
-      <ng-container>
-        <h3>Users in Group</h3>
-      </ng-container>
-      <ng-container style="display: inline" *ngFor="let u of groupData.users">
-        <p>{{u}}</p>
-      </ng-container>
+        <div class="groupTopRight">
+          <ng-container *ngIf="isRoomAdmin">
+            <h2>Add Assistant to Group</h2>
+            <form>
+              <select [(ngModel)]="newAssisName" name="newAssisName">
+                <option class="op1" value="" selected>Select User</option>
+                <ng-container *ngFor="let u of groupData.users">
+                  <option>{{u}}</option>
+                </ng-container>
+              </select><br><br>
+              <input type="button" class="button" value="Add {{newAssisName}}" (click)="newAssis()">
+            </form>
+            <div *ngIf="nAssisError">
+              <h4>{{nAssisError}}</h4>
+            </div>
+          </ng-container>
+        </div>
+      </div>
+      <div class="groupSegMid">
+        <div class="groupMidLeft">
+          <h3>Users in Group</h3>
+          <ng-container *ngFor="let u of groupData.users">
+            <p>{{u}}</p>
+          </ng-container>
+        </div>
+        <div class="groupMidMid">
+          <ng-container *ngIf="user.role != 'super' && !groupData.admin">
+            <h2>Currently no Admin</h2>
+          </ng-container>
+          <ng-container *ngIf="groupData.admin">
+            <h2>Room Admin: {{groupData.admin}}</h2>
+          </ng-container>
+          <ng-container *ngIf="user.role == 'super' && !groupData.admin">
+            <h2>This Group Has no Admin, Add one?</h2>
+            <form>
+              <select [(ngModel)]="newAdminName" name="newAdminName">
+                <option class="op1" value="" selected>Select Admin</option>
+                <ng-container *ngFor="let u of users">
+                  <option *ngIf="u.role == 'admin'">{{u.username}}</option>
+                </ng-container>
+              </select><br><br>
+              <input type="button" class="button" value="Add {{newAdminName}}" (click)="newAdminG()">
+            </form>
+            <div *ngIf="nAdminError">
+              <h4>{{nAdminError}}</h4>
+            </div>
+          </ng-container>
+          <ng-container *ngIf="isRoomAdmin">
+            <h2>Add Assistant to Group</h2>
+            <form>
+              <select [(ngModel)]="newAssisName" name="newAssisName">
+                <option class="op1" value="" selected>Select User</option>
+                <ng-container *ngFor="let u of groupData.users">
+                  <option>{{u}}</option>
+                </ng-container>
+              </select><br><br>
+              <input type="button" class="button" value="Add {{newAssisName}}" (click)="newAssis()">
+            </form>
+            <div *ngIf="nAssisError">
+              <h4>{{nAssisError}}</h4>
+            </div>
+          </ng-container>
+        </div>
+        <div class="groupMidRight">
+          <ng-container>
+            <h3>Channels: </h3>
+          </ng-container>
+          <ng-container *ngFor="let channel of groupData.channels">
+            <p>{{channel.name}}</p>
+          </ng-container>
+        </div>
+      </div>
     </div>
 
     <div class="inChannel" *ngIf="isInChannel">

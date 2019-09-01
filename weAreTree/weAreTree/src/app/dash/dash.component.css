@@ -68,6 +68,56 @@ form{
     border-radius: 20px;
 }
 
+.groupSeg {
+
+}
+
+/* Group section Top Div */
+.groupSegTop{
+    display: flex;
+    justify-content: space-between;
+}
+
+.groupTopLeft {
+    display: block;
+    background-color: #420d09;
+    width: 20%;
+    color: pink;
+}
+
+.groupTopMid {
+    display: block;
+    background-color: #420d09;
+}
+
+.groupTopRight {
+    display: block;
+    background-color: #420d09;
+}
+
+/* Group section Middle Div */
+.groupSegMid {
+    display: flex;
+    justify-content: space-between;
+}
+
+.groupMidLeft {
+    display: block;
+    background-color: #420d09;
+    width: 20%;
+    color: pink;
+}
+
+.groupMidMid {
+    display: block;
+    background-color: #420d09;
+}
+
+.groupMidRight {
+    display: block;
+    background-color: #420d09;
+}
+
 .inChannel {
     width: 90%;
     display: inline-block;

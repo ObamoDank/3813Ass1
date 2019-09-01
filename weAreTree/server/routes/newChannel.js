@@ -30,7 +30,7 @@ module.exports = function (app, path) {
                     if (!channelExists) {
                         allData.groups[i].channels.push(newChannel);
                     } else {
-                        return res.send("Oy Channel Exists ay Brah");
+                        return res.send({error: "Oy Channel Exists ay Brah"});
                     }
                 }
             }

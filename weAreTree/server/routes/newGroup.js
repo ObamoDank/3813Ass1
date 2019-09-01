@@ -38,7 +38,7 @@ module.exports = function(app, path){
                 });
                 res.send(groups);
             }else{
-                res.send("Oy Group Exists ay Brah");
+                res.send({error: "Oy Group Exists ay Brah"});
             }
         });
     });

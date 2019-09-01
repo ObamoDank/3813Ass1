@@ -19,90 +19,96 @@ export class DashComponent implements OnInit {
   isRoomAdmin = false;
   isRoomAssis = false;
 
+
   // User Location
   isInGroup = false;
   isInChannel = false;
   currentGroup = "";
   currentChannel = "";
 
+
   // Join Channels & Groups
   goToGroup = "";
   goToChannel = "";
   goGroupError = "";
   goChannelError = "";
-  
+
 
   // Data
   users = [];
   groups = [];
 
+
   // Room Data
   groupData = [];
   channel = [];
+
 
   // Create User Variables
   newUser = "";
   newEmail = "";
   newRole = "";
   createError = "";
-  
+
 
   // Delete User Variable
   killUser = "";
   killError = ""
-  
+
 
   // Promote User Variable
   boostUser = "";
   boostRole = "";
   promoteError = "";
-  
+
 
   // Add Assistant Variables
   newAssisName = "";
   nAssisError = "";
-  
+
 
   // Add Admin Variables
   newAdminName = "";
   nAdminError = "";
-  
+
 
   // Create Group Variables
   newGroup = "";
   newAdmin = "";
   gCreateError = "";
-  
+
 
   // Destroy Group Variables
   killGroup = "";
   gKillError = "";
-  
+
 
   // Invite to Group Variables
   inviteGroupName = "";
   inviteGroupUser = "";
   inviteGroupRole = "";
+  inviteGroupUserName = "";
   iGroupError = "";
-  
+  iGroupUserError = "";
+
 
   // Revoke from Group Variables
   revokeGroupName = "";
   revokeGroupUser = "";
   rGroupError = "";
-  
+
 
   // Create Channel Variables
   newChanGroup = "";
   newChan = "";
   cCreateError = "";
-  
+
 
   // Destroy Channel Variables
   killChanGroup = ""
   killChan = "";
   cKillError = "";
-  
+
 
   // Invite to Channel Variables
   inviteChanGroupName = "";
@@ -110,17 +116,22 @@ export class DashComponent implements OnInit {
   inviteChanUser = "";
   iChanError = "";
 
+
   // Revoke from Channel Variables
   revokeChanGroupName = "";
   revokeChanName = "";
   revokeChanUser = "";
   rChanError = "";
 
+
   // Error variables for display
-  error = "";
+  serverErrorUser = "";
+  serverErrorGroup = "";
+  serverErrorChannel = "";
 
   constructor(private http: HttpClient, private router: Router) { }
 
+  // Function Creates New User
   createUser() {
     this.resetErrors();
     if (this.newUser && this.newEmail && this.newRole) {
@@ -132,13 +143,12 @@ export class DashComponent implements OnInit {
 
       this.http.post<any>(BACKEND_URL + "/newUser", userObj).subscribe((data) => {
         console.log(data);
-        if (data != "User exists breh") {
+        if (!data.error) {
           console.log(data);
           this.users = data;
           this.trimUsers();
         } else {
-          console.log(data);
-          this.error = data;
+          this.serverErrorUser = data.error;
         }
         this.resetValues();
       });
@@ -147,6 +157,7 @@ export class DashComponent implements OnInit {
     }
   }
 
+  // Function Deletes User
   destroyUser() {
     this.resetErrors();
     if (this.killUser) {
@@ -163,6 +174,7 @@ export class DashComponent implements OnInit {
     }
   }
 
+  //Function Grants New Role to User
   promoteUser() {
     this.resetErrors();
     if (this.boostUser && this.boostRole) {
@@ -183,6 +195,7 @@ export class DashComponent implements OnInit {
     }
   }
 
+  // Function Creates New Group
   createGroup() {
     this.resetErrors();
     if (this.newGroup) {
@@ -194,19 +207,20 @@ export class DashComponent implements OnInit {
 
       this.http.post<any>(BACKEND_URL + "/newGroup", groupObj).subscribe((data) => {
         console.log(data);
-        if (data != "Oy group Exists ay Brah") {
+        if (!data.error) {
           this.groups = data;
           this.trimGroups();
-          this.resetValues();
         } else {
-          this.error = data;
+          this.serverErrorGroup = data.error;
         }
+        this.resetValues();
       });
     } else {
       this.gCreateError = "...Mate just pick a name Ay";
     }
   }
 
+  // Function Destroys Group
   destroyGroup() {
     this.resetErrors();
     if (this.killGroup) {
@@ -223,6 +237,7 @@ export class DashComponent implements OnInit {
     }
   }
 
+  // Function Creates new Channel
   createChannel() {
     this.resetErrors();
     if (this.newChanGroup && this.newChan) {
@@ -233,19 +248,20 @@ export class DashComponent implements OnInit {
 
       this.http.post<any>(BACKEND_URL + "/newChannel", chanObj).subscribe((data) => {
         console.log(data);
-        if (data != "Oy channel Exists ay Brah") {
+        if (!data.error) {
           this.groups = data;
           this.trimGroups();
-          this.resetValues();
         } else {
-          this.error = data;
+          this.serverErrorChannel = data.error;
         }
+        this.resetValues();
       });
     } else {
       this.cCreateError = "...Mate just pick a name Ay";
     }
   }
 
+  // Function Destroys Channel
   destroyChannel() {
     this.resetErrors();
     if (this.killChanGroup && this.killChan) {
@@ -265,6 +281,7 @@ export class DashComponent implements OnInit {
     }
   }
 
+  // Function Grants Access Rights To Group
   inviteGroup() {
     this.resetErrors();
     if (this.inviteGroupName && this.inviteGroupUser) {
@@ -289,6 +306,37 @@ export class DashComponent implements OnInit {
     }
   }
 
+  inviteGroupInGroup() {
+    this.resetErrors();
+    if (this.currentGroup && this.inviteGroupUserName) {
+      let invObj = {
+        "groupName": this.currentGroup,
+        "username": this.inviteGroupUserName,
+        "role": "user"
+      };
+
+      if (!this.inviteGroupRole) {
+        invObj.role = "user";
+      }
+
+      this.http.post<any>(BACKEND_URL + "/inviteGroup", invObj).subscribe((data) => {
+        console.log(data);
+        this.groups = data;
+        for (let i = 0; i < this.groups.length; i++) {
+          if (this.currentGroup == this.groups[i].name) {
+            this.groupData = this.groups[i];
+            console.log(this.groupData);
+          }
+        }
+        this.trimGroups();
+        this.resetValues();
+      });
+    } else {
+      this.iGroupError = "...Just pick a dude mate";
+    }
+  }
+
+  // Function Revokes Access rights to Group
   revokeGroup() {
     this.resetErrors();
     if (this.revokeGroupName && this.revokeGroupUser) {
@@ -309,6 +357,7 @@ export class DashComponent implements OnInit {
     }
   }
 
+  // Function Grants Access Rights To Channel
   inviteChannel() {
     this.resetErrors();
     if (this.inviteChanGroupName && this.inviteChanName && this.inviteChanUser) {
@@ -329,6 +378,7 @@ export class DashComponent implements OnInit {
     }
   }
 
+  //Function Revokes Access rights to channel
   revokeChannel() {
     this.resetErrors();
     if (this.revokeChanGroupName && this.revokeChanName && this.revokeChanUser) {
@@ -349,6 +399,7 @@ export class DashComponent implements OnInit {
     }
   }
 
+  // Function promotes user to Admin of Current Room
   newAdminG() {
     this.resetErrors();
     if (this.newAdminName) {
@@ -373,6 +424,7 @@ export class DashComponent implements OnInit {
     }
   }
 
+  // Function promotes user to Assis of Current Room
   newAssis() {
     this.resetErrors();
     if (this.newAssisName) {
@@ -398,6 +450,7 @@ export class DashComponent implements OnInit {
     }
   }
 
+  // Function allows user to join group
   joinGroup() {
     this.resetErrors();
     if (this.goToGroup) {
@@ -426,6 +479,7 @@ export class DashComponent implements OnInit {
     }
   }
 
+  // Function allows user to join Channel
   joinChannel() {
     this.resetErrors();
     if (this.goToChannel) {
@@ -440,6 +494,7 @@ export class DashComponent implements OnInit {
     }
   }
 
+  // Function Leaves Current Group
   leaveGroup() {
     this.resetErrors();
     if (this.isInChannel) {
@@ -454,17 +509,20 @@ export class DashComponent implements OnInit {
     }
   }
 
+  // Function Leaves Current Room
   leaveChannel() {
     this.isInChannel = false;
     this.currentChannel = "";
     this.resetValues();
   }
 
+  // Function clears storage and logs user out
   logout() {
     localStorage.clear()
     this.router.navigateByUrl("/");
   }
 
+  // Function returns Current User's data
   fetchUser() {
     let userObj = { "username": this.username };
     this.http.post<any>(BACKEND_URL + "/fetchUser", userObj).subscribe((data) => {
@@ -473,6 +531,7 @@ export class DashComponent implements OnInit {
     });
   }
 
+  // Functions returns the Current User's role
   fetchRole() {
     let userObj = { "username": this.username };
     this.http.post<any>(BACKEND_URL + "/fetchRole", userObj).subscribe((data) => {
@@ -481,6 +540,7 @@ export class DashComponent implements OnInit {
     });
   }
 
+  // Function returns a list of all users
   fetchUsers() {
     let userObj = { "username": this.username };
     this.http.post<any>(BACKEND_URL + "/fetchUsers", userObj).subscribe((data) => {
@@ -489,6 +549,7 @@ export class DashComponent implements OnInit {
     });
   }
 
+  // Function returns a list of all groups in the server and trims groups which are irrelevant to Current User
   fetchGroups() {
     let groupObj = { "message": "G'day maite could I get some groups over 'ere" };
     this.http.post<any>(BACKEND_URL + "/fetchGroups", groupObj).subscribe((data) => {
@@ -498,15 +559,19 @@ export class DashComponent implements OnInit {
     });
   }
 
+  // Function fetches all necessary data about groups and users from server
   ngOnInit() {
     this.username = localStorage.getItem("username");
     this.fetchUser();
     this.fetchRole();
     this.fetchUsers();
     this.fetchGroups();
-    this.error = ""
+    this.resetErrors();
+    this.resetValues();
   }
 
+
+  // Function removes Current User from user list
   trimUsers() {
     for (let i = 0; i < this.users.length; i++) {
       if (this.username == this.users[i].username) {
@@ -516,6 +581,8 @@ export class DashComponent implements OnInit {
     }
   }
 
+  // Function takes list of all groups in database and removes groups which are
+  // irrelevant to current user
   trimGroups() {
     if (this.userRole != 'super') {
       for (let i = this.groups.length - 1; i >= 0; i--) {
@@ -537,6 +604,7 @@ export class DashComponent implements OnInit {
     }
   }
 
+  // Function sets Super Admin values to highest privilege in each room
   IAmSuper() {
     if (this.userRole == 'super') {
       this.isRoomAdmin = true;
@@ -544,10 +612,13 @@ export class DashComponent implements OnInit {
     }
   }
 
+  // Function Resets Value of all Errors
   resetErrors() {
     this.goGroupError = "";
     this.goChannelError = "";
-    this.error = "";
+    this.serverErrorUser = "";
+    this.serverErrorGroup = "";
+    this.serverErrorChannel = "";
     this.rChanError = "";
     this.iChanError = "";
     this.cKillError = "";
@@ -562,9 +633,12 @@ export class DashComponent implements OnInit {
     this.createError = "";
     this.nAssisError = "";
     this.nAdminError = "";
+    this.iGroupUserError
   }
 
-  resetValues(){
+
+  // Function Resets Value of all Forms
+  resetValues() {
     this.goToGroup = "";
     this.goToChannel = "";
     this.newUser = "";
@@ -590,6 +664,6 @@ export class DashComponent implements OnInit {
     this.inviteChanGroupName = "";
     this.inviteChanName = "";
     this.inviteChanUser = "";
-    this.resetErrors();
+    this.inviteGroupUserName = "";
   }
 }

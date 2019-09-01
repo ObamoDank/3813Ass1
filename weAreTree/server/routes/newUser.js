@@ -37,7 +37,7 @@ module.exports = function(app, path){
                 });
                 res.send(users);
             }else{
-                res.send("User exists breh");
+                res.send({error: "User exists breh"});
             }
         });
     });

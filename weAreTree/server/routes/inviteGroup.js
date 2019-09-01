@@ -23,7 +23,7 @@ module.exports = function (app, path) {
                         allData.groups[i].users.push(user);
                     }
                     if(role == 'assis'){
-                        allData.groups[i].assis.push(assis);
+                        allData.groups[i].assis.push(user);
                     }
                     if(role == 'admin'){
                         allData.groups[i].admin = user;
