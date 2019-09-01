@@ -3,7 +3,7 @@
 
 ## Git Repository  
 
-My Git repository is very simple, I’ve cloned my angular project directly into the repository in the same format it was created in. I have stored my Angular folder separate from my Server side files files and the two are linked together with help from cors. My Server side holds my server.js file along with all of my routes.  
+My Git repository is very simple, I’ve cloned my angular project directly into the repository in the same format it was created in. I have stored my Angular folder separate from my Server side files and the two are linked together with help from cors. My Server side holds my server.js file along with all of my routes.  
 
 I’ve been using my Github as a basic storage location. I did have a few minor problems, when I first created my assignment it was located inside my 3813ICT coursework folder along with all of my weekly workshops. I needed to copy the file and create a dedicated Git Repository for it so I lost all of the commits I did before that.  
 
@@ -78,7 +78,7 @@ __Dash__ Component contains all of the functionality for the chat system. This i
 
 The reason no services have been used is because there is only a single component handling all of the functionality for the project. The dash function is quite heavy as described above and a service could alleviate this, however, there is no use for a service in terms of reusability of functions when there is only a single component. Perhaps in future iterations, a service will be utilized for the simple measure of aiding the main component in processing.
 
-###Models
+### Models
 
 There is a single view which is manipulated by the functionality of the html script in conjunction with the model stored in the typescript file. The data being stored in the typescript file is being displayed throughout the view and aspects of the view are altered based on the data being stored in the model. 
 
@@ -141,6 +141,10 @@ The Client takes input from the view. This input is then packaged appropriately 
 
 Finally, the view which displays all of the data simultaneously act as a view, moderate security and input validation. As users are only able to input predetermined values into most fields, the inputs are very safe. Aside from this, only correct data will be revealed inside of those fields so it will not be possible for users to be granted access to incorrect groups or granted access privileges which were not intended.
 
-##Client side display alterations
+## Client side display alterations
 
 The html client is running a mass of angular templating. The most prominent of this templating correlates with the role of the current user. This will alter the display of the entire page. The user is only able to access various components within the view if they have the correct privilege. This data is stored in the server and retrieved upon user login. When users roles are changed, the state is changed in the view and different components are displayed for each user. 
+
+The variables retrieved from the database on the server side are sent to the client side. This replaces the current data in the client and this information is reflected in the view. For example, when a new user is added to a group, the information is sent to the server, stored in the database and the new state of the database is sent back to the client. This is then reflected in the list of users. Furthermore, if that user logs in, they will be able to see that they have access to a new group and they will be able to access that group. Another more prominent example is one in which a user is promoted to a super user. When a normal user logs into the chat, they have simply a list of the groups which they have access to. A super user on the other hand, has access to a whole dashboard full of commands. If the user is promoted to a super user, their view will change to reflect this. They will now have access to the entire dashboard.
+
+Finally, there is a variable called __IsInRoom__ and __IsRoomAdmin__. These variables are simple Boolean expressions. The chat component will only show if the __IsInRoom__ variable is set to true. This represents a state change on the client side. If the user has the __IsInRoom__ variable along with the __IsRoomAdmin__ variables set to true, they will be able to view the chat component along with the accompanying commands which comes with Admin privilege. They same principles apply when entering a channel.
