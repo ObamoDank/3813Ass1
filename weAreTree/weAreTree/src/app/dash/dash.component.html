@@ -475,36 +475,58 @@
         </div>
       </div>
     </div>
+  </div><br><br>
+
+  <div class="listGroupChan">
+    <h1> Your Groups & Channels </h1>
+    <div class="actualList">
+      <ng-container *ngFor="let group of groups">
+        <div class="displayGroup">
+          <h3>{{group.name}}</h3>
+          <ng-container *ngFor="let c of group.channels">
+            <p>{{c.name}}</p>
+          </ng-container>
+        </div>
+      </ng-container>
+    </div>
+
+    <div>
+      <h2>Logout</h2>
+      <input style="width: 20%; border-color: #e1ad01" type="button" class="button" value="Bye" (click)="logout()">
+    </div><br><br>
+
   </div>
 
-
   <div class="roomNav">
-    <h3> Your Groups & Channels </h3>
-    <form>
-      <select [(ngModel)]="goToGroup" name="goToGroup">
-        <option class="op1" value="" selected>Your Groups</option>
-        <ng-container *ngFor="let group of groups">
-          <option>
-            {{group.name}}
-          </option>
-        </ng-container>
-      </select><br><br>
-      <input type="button" class="button" value="Go To Group" (click)="joinGroup()">
-    </form><br><br>
-    <form *ngIf="goToGroup">
-      <select [(ngModel)]="goToChannel" name="goToChannel">
-        <option class="op1" value="" selected>Your Channels</option>
-        <ng-container *ngFor="let group of groups">
-          <ng-container *ngIf="goToGroup == group.name">
-            <option *ngFor="let channel of group.channels">
-              {{channel.name}}
+    <div class="groupChan">
+      <h3> Join Rooms </h3>
+      <form>
+        <select [(ngModel)]="goToGroup" name="goToGroup">
+          <option class="op1" value="" selected>Your Groups</option>
+          <ng-container *ngFor="let group of groups">
+            <option>
+              {{group.name}}
             </option>
           </ng-container>
-        </ng-container>
-      </select><br><br>
-      <input *ngIf="goToGroup" type="button" class="button" value="Go To Channel" (click)="joinChannel()">
-    </form>
+        </select><br><br>
+        <input type="button" class="button" value="Go To Group" (click)="joinGroup()">
+      </form><br><br>
+      <form *ngIf="goToGroup">
+        <select [(ngModel)]="goToChannel" name="goToChannel">
+          <option class="op1" value="" selected>Your Channels</option>
+          <ng-container *ngFor="let group of groups">
+            <ng-container *ngIf="goToGroup == group.name">
+              <option *ngFor="let channel of group.channels">
+                {{channel.name}}
+              </option>
+            </ng-container>
+          </ng-container>
+        </select><br><br>
+        <input *ngIf="goToGroup" type="button" class="button" value="Go To Channel" (click)="joinChannel()">
+      </form>
+    </div>
   </div><br>
+
 
   <div class="chat" *ngIf="isInGroup">
     <h1>Welcome to Chat</h1>
@@ -512,7 +534,7 @@
       <div class="groupSegTop">
         <div class="groupTopLeft">
           <ng-container *ngIf="isRoomAssis">
-            <h2>Add User to Group</h2>
+            <h2>Invite User</h2>
             <form>
               <select [(ngModel)]="inviteGroupUserName" name="inviteGroupUserName">
                 <option class="op1" value="" selected>Select User</option>
@@ -529,8 +551,8 @@
               </select><br><br>
               <input type="button" class="button" value="Add {{inviteGroupUserName}}" (click)="inviteGroupInGroup()">
             </form>
-            <div *ngIf="nUserError">
-              <h4>{{nUserError}}</h4>
+            <div *ngIf="iInGroupError">
+              <h4>{{iInGroupError}}</h4>
             </div>
           </ng-container>
         </div>
@@ -538,8 +560,13 @@
           <h2>Group: {{currentGroup}}</h2>
         </div>
         <div class="groupTopRight">
+          <ng-container *ngIf="!isRoomAdmin">
+            <div style="visibility: hidden; width: 10%; height: 10%; background-color: pink">
+              <p>Alright I'm Using Hack</p>
+            </div>
+          </ng-container>
           <ng-container *ngIf="isRoomAdmin">
-            <h2>Add Assistant to Group</h2>
+            <h2>Create Assistant</h2>
             <form>
               <select [(ngModel)]="newAssisName" name="newAssisName">
                 <option class="op1" value="" selected>Select User</option>
@@ -554,17 +581,17 @@
             </div>
           </ng-container>
         </div>
-      </div>
+      </div><br><br>
       <div class="groupSegMid">
         <div class="groupMidLeft">
-          <h3>Users in Group</h3>
+          <h3>Group Users</h3>
           <ng-container *ngFor="let u of groupData.users">
             <p>{{u}}</p>
           </ng-container>
         </div>
         <div class="groupMidMid">
           <ng-container *ngIf="user.role != 'super' && !groupData.admin">
-            <h2>Currently no Admin</h2>
+            <h2>Group has No Admin - Go Wild</h2>
           </ng-container>
           <ng-container *ngIf="groupData.admin">
             <h2>Room Admin: {{groupData.admin}}</h2>
@@ -584,45 +611,88 @@
               <h4>{{nAdminError}}</h4>
             </div>
           </ng-container>
-          <ng-container *ngIf="isRoomAdmin">
-            <h2>Add Assistant to Group</h2>
-            <form>
-              <select [(ngModel)]="newAssisName" name="newAssisName">
-                <option class="op1" value="" selected>Select User</option>
-                <ng-container *ngFor="let u of groupData.users">
-                  <option>{{u}}</option>
-                </ng-container>
-              </select><br><br>
-              <input type="button" class="button" value="Add {{newAssisName}}" (click)="newAssis()">
-            </form>
-            <div *ngIf="nAssisError">
-              <h4>{{nAssisError}}</h4>
-            </div>
-          </ng-container>
         </div>
         <div class="groupMidRight">
           <ng-container>
-            <h3>Channels: </h3>
-          </ng-container>
-          <ng-container *ngFor="let channel of groupData.channels">
-            <p>{{channel.name}}</p>
+            <h3>Group Assistants</h3>
+            <ng-container *ngFor="let u of groupData.assis">
+              <p>{{u}}</p>
+            </ng-container>
           </ng-container>
         </div>
       </div>
-    </div>
+      <div class="groupSegBot">
+        <div>
+          <h2>Join Channel</h2>
+        </div>
+        <div class="channelButtons">
+          <ng-container *ngFor="let channel of groupData.channels">
+            <input style="border-color: #e1ad01" type="button" class="button" value="{{channel.name}}"
+              (click)="joinChannel(channel.name)">
+          </ng-container>
+        </div>
+      </div><br>
+      <div>
+        <h2>Leave {{groupData.name}}</h2>
+        <input style="width: 50%; border-color: #e1ad01" type="button" class="button" value="Bye"
+          (click)="leaveGroup()">
+      </div><br>
+    </div><br><br>
 
     <div class="inChannel" *ngIf="isInChannel">
-      <h2>Entered {{currentChannel}}</h2>
-      <div class="chatWindow">
-        <p>Message History to Be Displayed</p>
+      <div class="chatSeg">
+        <div class="chatLeft">
+          <div class="chatTopLeft">
+            <h2>Entered {{currentChannel}}</h2>
+          </div>
+          <div class="chatMidLeft">
+            <p>Message History to Be Displayed</p>
+          </div><br>
+          <div class="chatBotLeft">
+            <form>
+              <textarea rows="2" cols="60" [(ngModel)]="newMessage" name="newMessage" class="inp"></textarea><br><br>
+              <input style="width: 40%" type="button" class="button" value="Chat">
+            </form>
+          </div>
+        </div>
+        <div class="chatRight">
+          <div class="chatTopRight">
+            <ng-container *ngIf="isRoomAssis">
+              <h2>Invite User</h2>
+              <form>
+                <select [(ngModel)]="inviteChannelUserName" name="inviteChannelUserName">
+                  <option class="op1" value="" selected>Select User</option>
+                  <ng-container *ngFor="let c of channel">
+                    <ng-container *ngIf="c.name == currentChannel">
+                      <ng-container *ngFor="let u of users">
+                        <option *ngIf="c.access.includes(u.username)">
+                          {{u.username}}
+                        </option>
+                      </ng-container>
+                    </ng-container>
+                  </ng-container>
+                </select><br><br>
+                <input type="button" class="button" value="Add {{inviteChannelUserName}}"
+                  (click)="inviteChannelInChannel()">
+              </form>
+              <div *ngIf="iInChannelError">
+                <h4>{{iInChannelError}}</h4>
+              </div>
+            </ng-container>
+          </div><br>
+          <div class="chatBotRight">
+            <h3>Group Users</h3>
+            <ng-container *ngFor="let u of groupData.users">
+              <p>{{u}}</p>
+            </ng-container>
+          </div>
+        </div>
       </div>
-      <div class="chatForm">
-        <form>
-          <textarea rows="5" cols="60" [(ngModel)]="newMessage" name="newMessage" class="inp"></textarea><br><br>
-          <input style="width: 40%" type="button" class="button" value="Chat">
-        </form>
+      <div style="margin-top: 15%;">
+        <h2>Leave {{currentChannel}}</h2>
+        <input style="width: 50%; border-color: #e1ad01" type="button" class="button" value="Bye"
+          (click)="leaveChannel()">
       </div>
     </div>
   </div>
-
 </body>

@@ -55,6 +55,10 @@ select {
     font-size: 18px;
 }
 
-option{
+option {
     color: #c7da46;
+}
+
+textarea {
+    resize: none;
 }

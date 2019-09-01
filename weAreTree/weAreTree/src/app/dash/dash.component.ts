@@ -90,6 +90,7 @@ export class DashComponent implements OnInit {
   inviteGroupUserName = "";
   iGroupError = "";
   iGroupUserError = "";
+  iInGroupError = "";
 
 
   // Revoke from Group Variables
@@ -114,7 +115,9 @@ export class DashComponent implements OnInit {
   inviteChanGroupName = "";
   inviteChanName = "";
   inviteChanUser = "";
+  inviteChannelUserName = "";
   iChanError = "";
+  iInChannelError = "";
 
 
   // Revoke from Channel Variables
@@ -315,10 +318,6 @@ export class DashComponent implements OnInit {
         "role": "user"
       };
 
-      if (!this.inviteGroupRole) {
-        invObj.role = "user";
-      }
-
       this.http.post<any>(BACKEND_URL + "/inviteGroup", invObj).subscribe((data) => {
         console.log(data);
         this.groups = data;
@@ -332,7 +331,7 @@ export class DashComponent implements OnInit {
         this.resetValues();
       });
     } else {
-      this.iGroupError = "...Just pick a dude mate";
+      this.iInGroupError = "...Just pick a dude mate";
     }
   }
 
@@ -375,6 +374,26 @@ export class DashComponent implements OnInit {
       });
     } else {
       this.iChanError = "...Just pick a dude mate";
+    }
+  }
+
+  inviteChannelInChannel() {
+    this.resetErrors();
+    if (this.currentChannel && this.currentGroup && this.inviteChannelUserName) {
+      let invObj = {
+        "groupName": this.currentGroup,
+        "channelName": this.currentChannel,
+        "username": this.inviteChannelUserName
+      };
+
+      this.http.post<any>(BACKEND_URL + "/inviteChannel", invObj).subscribe((data) => {
+        console.log(data);
+        this.groups = data;
+        this.trimGroups();
+        this.resetValues();
+      });
+    } else {
+      this.iInChannelError = "...Just pick a dude mate";
     }
   }
 
@@ -480,8 +499,14 @@ export class DashComponent implements OnInit {
   }
 
   // Function allows user to join Channel
-  joinChannel() {
+  joinChannel(channelO) {
     this.resetErrors();
+    console.log(channelO);
+    if (channelO) {
+      this.isInChannel = true;
+      this.currentChannel = channelO;
+      this.resetValues();
+    }
     if (this.goToChannel) {
       if (!this.isInGroup || this.currentGroup != this.goToGroup) {
         this.joinGroup();
@@ -633,7 +658,9 @@ export class DashComponent implements OnInit {
     this.createError = "";
     this.nAssisError = "";
     this.nAdminError = "";
-    this.iGroupUserError
+    this.iGroupUserError = "";
+    this.iInGroupError = "";
+    this.iInChannelError = ""
   }
 
 
@@ -665,5 +692,6 @@ export class DashComponent implements OnInit {
     this.inviteChanName = "";
     this.inviteChanUser = "";
     this.inviteGroupUserName = "";
+    this.inviteChannelUserName = "";
   }
 }

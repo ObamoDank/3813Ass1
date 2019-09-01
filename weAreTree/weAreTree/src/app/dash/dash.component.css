@@ -43,17 +43,35 @@ form{
     border-radius: 20px;
 }
 
+.listGroupChan {
+    border-color: #420d09; 
+    border-width:5px; 
+    border-style:double; 
+    border-radius: 20px;
+    background-color: rgb(20, 20, 20);
+    opacity: 0.7;
+}
+
+.actualList {
+    display: flex;
+    justify-content: space-around;
+}
+
+.displayGroup {
+    display: block;
+}
+
 .chat {
     width: 100%;
     display: inline-block;
     background-color: rgb(20, 20, 20);
-    padding: 5%;
     max-width: 60rem;
     border-color: #420d09; 
     border-width:5px; 
     border-style:double; 
     border-radius: 20px;
     opacity: 0.7;
+    padding: 0% 4% 2% 4%;
 }
 
 .inGroup {
@@ -80,19 +98,14 @@ form{
 
 .groupTopLeft {
     display: block;
-    background-color: #420d09;
-    width: 20%;
-    color: pink;
 }
 
 .groupTopMid {
     display: block;
-    background-color: #420d09;
 }
 
 .groupTopRight {
     display: block;
-    background-color: #420d09;
 }
 
 /* Group section Middle Div */
@@ -103,19 +116,34 @@ form{
 
 .groupMidLeft {
     display: block;
-    background-color: #420d09;
-    width: 20%;
-    color: pink;
+    border-color: #420d09; 
+    border-width:5px; 
+    border-style:double; 
+    border-radius: 20px;
+    padding: 1%;
 }
 
 .groupMidMid {
     display: block;
-    background-color: #420d09;
 }
 
 .groupMidRight {
     display: block;
-    background-color: #420d09;
+    border-color: #420d09; 
+    border-width:5px; 
+    border-style:double; 
+    border-radius: 20px;
+    padding: 1%;
+}
+
+/* Group section Bottom Div */
+.groupSegBot {
+
+}
+
+.channelButtons {
+    display: flex;
+    justify-content: space-around;
 }
 
 .inChannel {
@@ -124,6 +152,40 @@ form{
     background-color: rgb(20, 20, 20);
     padding: 5%;
     max-width: 45rem;
+    border-color: #420d09; 
+    border-width:5px; 
+    border-style:double; 
+    border-radius: 20px;
+}
+
+.chatSeg {
+    display: flex;
+    justify-content: space-around;
+}
+
+.chatLeft {
+    display: block;
+}
+
+.chatMidLeft {
+    display: block;
+    background-color: #033500;
+    border-color: #e1ad01; 
+    border-width: 3px; 
+    border-style: double; 
+    border-radius: 10px;
+    max-height: 30rem;
+    height: 70%;
+}
+
+.chatRight {
+    display: block;
+}
+
+.chatBotRight {
+    display: block;
+    background-color: rgb(20, 20, 20);
+    padding: 5%;
     border-color: #420d09; 
     border-width:5px; 
     border-style:double; 
